@@ -18,6 +18,7 @@ function App() {
         >
           Learn React
         </a>
+        {process.env.REACT_APP_SHOPIFY_STOREFRONT_ACCESS_TOKEN}
       </header>
     </div>
   );
