@@ -1,0 +1,22 @@
+/*
+We have two breakpoints in our design: 767px and 1024px.
+By default the styles are for tablets and larger screens.
+*/
+
+/* Default styles for tablets and larger screens */
+.layout {
+  margin: 0 24px;
+  max-width: 1024px;
+}
+
+@media screen and (max-width: 767px) {
+  .layout {
+    margin: 0 24px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .layout {
+    margin: 0 auto;
+  }
+}
