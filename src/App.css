@@ -4,8 +4,8 @@ By default the styles are for tablets and larger screens.
 */
 
 :root {
-  --main: green;
-  --active: blue;
+  --main: rgb(73, 73, 73);
+  --active: rgb(25, 25, 25);
 }
 
 /* Default styles for tablets and larger screens */
