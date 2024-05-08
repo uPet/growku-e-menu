@@ -14,7 +14,7 @@
   line-height: 20px;
   letter-spacing: 0ch;
   text-transform: none;
-  color: rgb(73, 73, 73);
+  color: var(--main);
   margin: 0px;
   display: block;
 }
@@ -22,7 +22,7 @@
 .menu-item.active {
   font-weight: 700;
   letter-spacing: -0.4px;
-  color: rgb(25, 25, 25);
+  color: var(--active);
 }
 
 .menu-content {
@@ -37,7 +37,7 @@
 
 .menu-item-highlight {
   position: absolute;
-  background-color: rgb(25, 25, 25);
+  background-color: var(--active);
   border-radius: 0px 8px 8px 0px;
   left: 0;
   bottom: 0;
