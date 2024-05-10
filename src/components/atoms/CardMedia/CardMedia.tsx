@@ -10,7 +10,7 @@ export default function CardMedia({
 } & React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
     <div className={`card-media ${className}`}>
-      <img {...imageProps} />
+      <img alt="" {...imageProps} />
     </div>
   );
 }
