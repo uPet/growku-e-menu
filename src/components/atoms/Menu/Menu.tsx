@@ -6,20 +6,16 @@ import "./menu.css";
 interface MenuProps {
   items: string[];
   selectedItem: string;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  onClick?: (item: string) => void;
   children?: React.ReactNode;
 }
 
 const Menu: React.FC<MenuProps> = ({
   items,
   selectedItem,
-  setSelectedItem,
+  onClick,
   children,
 }) => {
-
-  const handleClick = (item: string) => {
-    setSelectedItem(item);
-  };
 
   return (
     <div className="menu">
@@ -29,7 +25,7 @@ const Menu: React.FC<MenuProps> = ({
             <h2
               key={item}
               className={`menu-item ${selectedItem === item ? "active" : ""}`}
-              onClick={() => handleClick(item)}
+              onClick={() => onClick?.(item)}
             >
               {item}
             </h2>

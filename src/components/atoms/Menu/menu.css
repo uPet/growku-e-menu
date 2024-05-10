@@ -6,6 +6,11 @@
   width: 200px;
 }
 
+.menu-item-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
 .menu-item {
   padding: 6px 12px;
   cursor: pointer;
@@ -25,16 +30,6 @@
   color: var(--active);
 }
 
-.menu-content {
-  flex: 1;
-  padding: 0 20px;
-}
-
-.menu-item-wrapper {
-  position: relative;
-  margin-bottom: 12px;
-}
-
 .menu-item-highlight {
   position: absolute;
   background-color: var(--active);
@@ -43,4 +38,9 @@
   bottom: 0;
   height: 100%;
   width: 4px;
+}
+
+.menu-content {
+  flex: 1;
+  padding: 0 20px;
 }

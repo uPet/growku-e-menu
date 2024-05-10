@@ -20,7 +20,7 @@ const HomePageView = () => {
       <Menu
         items={categoriesList}
         selectedItem={selectedItem}
-        setSelectedItem={setSelectedItem}
+        onClick={(item) => setSelectedItem(item)}
       >
         <h2>{selectedItem}</h2>
       </Menu>
