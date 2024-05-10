@@ -1,0 +1,26 @@
+.card-content {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-content h3 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.card-content p {
+  text-transform: none;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 40px;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

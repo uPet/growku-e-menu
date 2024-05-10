@@ -1,0 +1,15 @@
+.cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media screen and (min-width: 1024px) {
+  .cards-wrapper > .card:nth-child(odd) {
+    margin-right: 16px;
+    margin-bottom: 16px;
+  }
+}
+
+.card-content .price {
+  margin-bottom: 0.25rem;
+}

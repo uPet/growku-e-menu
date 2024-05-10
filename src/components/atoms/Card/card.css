@@ -1,0 +1,26 @@
+.card {
+  height: 142px;
+  width: 100%;
+  max-height: 142px;
+  box-sizing: border-box;
+  border-radius: var(--product-card-corner-radius);
+}
+
+@media screen and (min-width: 1024px) {
+  .card {
+    border: 1px solid rgba(var(--color-foreground), 0.2);
+    width: calc(50% - 8px);
+  }
+}
+
+.card-line {
+  display: block;
+  margin: 0px 16px;
+  border-top: 1px solid rgba(var(--color-foreground), 0.2);
+}
+
+@media screen and (min-width: 1024px) {
+  .card-line {
+    display: none;
+  }
+}
