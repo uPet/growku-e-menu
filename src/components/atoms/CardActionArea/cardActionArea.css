@@ -1,0 +1,12 @@
+.card-action {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  border: none;
+  text-align: left;
+  background-color: transparent;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
