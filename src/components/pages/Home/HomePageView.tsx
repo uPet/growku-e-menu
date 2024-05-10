@@ -114,27 +114,25 @@ const HomePageView = () => {
   }, [selectedItem]);
 
   return (
-    <>
+    <div className="layout">
       <h1 className="page-header">La Mexicana Bar & Grill</h1>
-      <div className="layout">
-        <Menu
-          contentRef={menuContentRef}
-          items={categoriesList}
-          selectedItem={selectedItem}
-          onClick={(item) => {
-            setSelectedItem(item);
-            scrollToTop();
-          }}
-        >
-          <h2>{selectedItem}</h2>
-          <div className="cards-wrapper">
-            {products.map((item, index) => (
-              <ProductCard key={`${item.title}-${index}`} item={item} />
-            ))}
-          </div>
-        </Menu>
-      </div>
-    </>
+      <Menu
+        contentRef={menuContentRef}
+        items={categoriesList}
+        selectedItem={selectedItem}
+        onClick={(item) => {
+          setSelectedItem(item);
+          scrollToTop();
+        }}
+      >
+        <h2>{selectedItem}</h2>
+        <div className="cards-wrapper">
+          {products.map((item, index) => (
+            <ProductCard key={`${item.title}-${index}`} item={item} />
+          ))}
+        </div>
+      </Menu>
+    </div>
   );
 };
 
