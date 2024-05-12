@@ -19,20 +19,17 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  // const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const productModalRef = useRef<HTMLDivElement>(null);
 
   const openModal = () => {
-    // setSelectedProduct(product);
-    document.body.style.overflow = "hidden"; // Disable scrolling when modal is open
+    document.body.style.overflow = "hidden";
     if (productModalRef.current) {
       productModalRef.current.style.visibility = "visible";
     }
   };
 
   const closeModal = () => {
-    // setSelectedProduct(null);
-    document.body.style.overflow = ""; // Enable scrolling when modal is closed
+    document.body.style.overflow = "";
     if (productModalRef.current) {
       productModalRef.current.style.visibility = "hidden";
     }
