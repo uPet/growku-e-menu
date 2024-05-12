@@ -2,15 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 import Menu from "../../atoms/Menu/Menu";
 import ProductCard from "../../organisms/ProductCard/ProductCard";
-
-const categoriesList = [
-  "Breakfast",
-  "Antojitos",
-  "Steaks",
-  "Quesadillas",
-  "Mexican Tacos",
-  "Burritos",
-];
+import { Category } from "../../../model/category";
+import { getCategoriesData } from "../../../api/categories-graphql";
 
 type Product = {
   title: string;
@@ -26,8 +19,14 @@ const productsData: Product[] = [
       "🇲🇽 Tres tacos de carne de birria, cebolla y queso. Acompañados con caldo de birria, ensalada de lechuga y habanero. 🇺🇸 Three birria beef tacos with onion and cheese. Accompanied by birria broth, lettuce salad, and habanero.",
     price: "$16.00",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -39,7 +38,10 @@ const productsData: Product[] = [
     description: "🇲🇽 Quesadilla con carne de birria. 🇺🇸 Birria quesadilla.",
     price: "$17.99",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -52,8 +54,14 @@ const productsData: Product[] = [
       "🇲🇽 Tres tacos de carne de birria, cebolla y queso. Acompañados con caldo de birria, ensalada de lechuga y habanero. 🇺🇸 Three birria beef tacos with onion and cheese. Accompanied by birria broth, lettuce salad, and habanero.",
     price: "$16.00",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -65,7 +73,10 @@ const productsData: Product[] = [
     description: "🇲🇽 Quesadilla con carne de birria. 🇺🇸 Birria quesadilla.",
     price: "$17.99",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -78,8 +89,14 @@ const productsData: Product[] = [
       "🇲🇽 Tres tacos de carne de birria, cebolla y queso. Acompañados con caldo de birria, ensalada de lechuga y habanero. 🇺🇸 Three birria beef tacos with onion and cheese. Accompanied by birria broth, lettuce salad, and habanero.",
     price: "$16.00",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -91,7 +108,10 @@ const productsData: Product[] = [
     description: "🇲🇽 Quesadilla con carne de birria. 🇺🇸 Birria quesadilla.",
     price: "$17.99",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -104,8 +124,14 @@ const productsData: Product[] = [
       "🇲🇽 Tres tacos de carne de birria, cebolla y queso. Acompañados con caldo de birria, ensalada de lechuga y habanero. 🇺🇸 Three birria beef tacos with onion and cheese. Accompanied by birria broth, lettuce salad, and habanero.",
     price: "$16.00",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -117,7 +143,10 @@ const productsData: Product[] = [
     description: "🇲🇽 Quesadilla con carne de birria. 🇺🇸 Birria quesadilla.",
     price: "$17.99",
     media: [
-      { type: "image", url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg" },
+      {
+        type: "image",
+        url: "https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=60/media/photosV2/6817cd51-854d-4934-bfa3-4508f4c88687-retina-large.jpeg",
+      },
       {
         type: "video",
         url: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -127,8 +156,10 @@ const productsData: Product[] = [
 ];
 
 const HomePageView = () => {
-  const [selectedItem, setSelectedItem] = useState(categoriesList[0]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [products, setProducts] = useState(productsData.slice(0, 10));
+
   const menuContentRef = useRef<HTMLDivElement>(null);
 
   const scrollToTop = () => {
@@ -139,21 +170,42 @@ const HomePageView = () => {
 
   useEffect(() => {
     setProducts(productsData.slice(0, Math.random() * 10));
-  }, [selectedItem]);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const categoriesData = await getCategoriesData();
+        if (!categoriesData) return;
+
+        setCategories(
+          categoriesData.sort((a, b) => a.title.localeCompare(b.title))
+        );
+        setSelectedCategory(categoriesData[0].title);
+      } catch (error) {
+        // TODO: handle the error here!
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchCategories();
+  }, []);
 
   return (
     <div className="layout">
-      <h1 className="page-header">La Mexicana Bar & Grill</h1>
+      <h1 className="page-header">
+        {process.env.REACT_APP_SHOPIFY_STOREFRONT_NAME}
+      </h1>
       <Menu
         contentRef={menuContentRef}
-        items={categoriesList}
-        selectedItem={selectedItem}
+        items={categories.map((category) => category.title)}
+        selectedItem={selectedCategory}
         onClick={(item) => {
-          setSelectedItem(item);
+          setSelectedCategory(item);
           scrollToTop();
         }}
       >
-        <h2>{selectedItem}</h2>
+        <h2>{selectedCategory}</h2>
         <div className="cards-wrapper">
           {products.map((product, index) => (
             <ProductCard key={`${product.title}-${index}`} product={product} />
