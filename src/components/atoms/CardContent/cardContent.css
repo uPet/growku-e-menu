@@ -8,9 +8,13 @@
 .card-content h3 {
   margin-top: 0;
   margin-bottom: 0.25rem;
+  text-transform: none;
   text-overflow: ellipsis;
-  white-space: nowrap;
   overflow: hidden;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .card-content p {
