@@ -10,7 +10,11 @@ export default function CardMedia({
 } & React.ImgHTMLAttributes<HTMLImageElement>) {
   return (
     <div className={`card-media ${className}`}>
-      <img alt="" {...imageProps} />
+      {imageProps?.src ? (
+        <img alt="" src="" {...imageProps} />
+      ) : (
+        <div className="placeholder" />
+      )}
     </div>
   );
 }
