@@ -9,7 +9,7 @@
 // service worker, and the Workbox build step will be skipped.
 
 import CryptoJS from "crypto-js";
-import { Store, get, set } from 'idb-keyval';
+import { Store, get, set } from "idb-keyval";
 import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
@@ -83,6 +83,20 @@ registerRoute(
   })
 );
 
+// Cache videos with a StaleWhileRevalidate strategy
+registerRoute(
+  ({ url }) => {
+    console.log("Is Video?", url.pathname, url.pathname.endsWith(".mp4"));
+    return url.pathname.endsWith(".mp4");
+  },
+  new StaleWhileRevalidate({
+    cacheName: "videos",
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 20 }), // Adjust maxEntries as needed
+    ],
+  })
+);
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener("message", (event) => {
@@ -94,7 +108,7 @@ self.addEventListener("message", (event) => {
 // Any other custom service worker logic can go here.
 
 // Init indexedDB using idb-keyval, https://github.com/jakearchibald/idb-keyval
-const store = new Store('GraphQL-Cache', 'PostResponses');
+const store = new Store("GraphQL-Cache", "PostResponses");
 
 async function getCache(request: any) {
   let data: any;
@@ -127,7 +141,7 @@ async function serializeResponse(response: any) {
   let serialized: any = {
     headers: serializedHeaders,
     status: response.status,
-    statusText: response.statusText
+    statusText: response.statusText,
   };
   serialized.body = await response.json();
   return serialized;
@@ -165,7 +179,7 @@ async function staleWhileRevalidate(event: any): Promise<any> {
 // the background and update the cache.
 self.addEventListener("fetch", async (event) => {
   if (event.request.method === "POST") {
-    console.log('event.request :>> ', event.request);
+    console.log("event.request :>> ", event.request);
     event.respondWith(staleWhileRevalidate(event));
   }
 
