@@ -11,10 +11,10 @@
 import CryptoJS from "crypto-js";
 import { Store, get, set } from 'idb-keyval';
 import { clientsClaim } from "workbox-core";
-import { ExpirationPlugin } from "workbox-expiration";
+// import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+// import { StaleWhileRevalidate } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -134,7 +134,7 @@ async function serializeResponse(response: any) {
 }
 
 async function setCache(request: any, response: any) {
-  var key, data;
+  // var key, data;
   let body = await request.json();
   let id = CryptoJS.MD5(body.query).toString();
 
@@ -147,7 +147,7 @@ async function setCache(request: any, response: any) {
 }
 
 async function staleWhileRevalidate(event: any): Promise<any> {
-  let promise = null;
+  // let promise = null;
   let cachedResponse = await getCache(event.request.clone());
   let fetchPromise = fetch(event.request.clone())
     .then((response) => {
