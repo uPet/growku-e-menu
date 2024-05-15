@@ -5,11 +5,13 @@ import { Category } from "../../../model/category";
 import { getCategoriesData } from "../../../api/categories-graphql";
 import { Product } from "../../../model/product";
 import Products from "../../organisms/Products/Products";
+import Videos from "./Videos";
 
 const HomePageView = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allVideos, setAllVideos] = useState<string[]>([]);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
@@ -37,6 +39,12 @@ const HomePageView = () => {
           [] as Product[]
         );
         setAllProducts(allProducts);
+
+        const allVideos = allProducts.reduce((acc, product) => {
+          const videos = product.media.filter((item) => item.type === "video");
+          return [...acc, ...videos.map((video) => video.url)];
+        }, [] as string[]);
+        setAllVideos(Array.from(new Set(allVideos)));
       } catch (error) {
         // TODO: handle the error here!
         console.error("Error fetching data:", error);
@@ -78,6 +86,8 @@ const HomePageView = () => {
       <div className="" style={{ display: "none" }}>
         <Products products={allProducts} />
       </div>
+      {/* Render all the videos so they are preloaded */}
+      <Videos allVideos={allVideos} />
     </>
   );
 };
