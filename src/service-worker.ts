@@ -135,17 +135,34 @@ async function setCache(request: Request, response: Response): Promise<void> {
 
 async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
   let cachedResponse: Response | null = await getCache(event.request.clone());
+
   try {
-    if (!cachedResponse) {
-      // If no cached response is found, fetch from network
-      const fetchResponse = await fetch(event.request.clone());
-      await setCache(event.request.clone(), fetchResponse.clone());
-      return fetchResponse;
+    // Serve the cached response immediately if available
+    if (cachedResponse) {
+      // Start a fetch request in the background to get a fresh response
+      fetch(event.request.clone())
+        .then(async (fetchResponse) => {
+          const responseClone = fetchResponse.clone();
+          await setCache(event.request.clone(), responseClone);
+        })
+        .catch((error) => {
+          console.error("Fetch error:", error);
+        });
+
+      return cachedResponse;
     }
-    return cachedResponse;
+
+    // If no cached response is found, fetch from the network
+    const fetchResponse = await fetch(event.request.clone());
+
+    const responseClone = fetchResponse.clone();
+    await setCache(event.request.clone(), responseClone);
+
+    return fetchResponse;
   } catch (error) {
-    console.error(error);
-    // If an error occurs, return cached response if available
+    console.error("staleWhileRevalidate error:", error);
+    // If an error occurs during the process, return the cached response if available
+    // Otherwise, return a generic service unavailable response
     return (
       cachedResponse ||
       new Response(null, { status: 503, statusText: "Service Unavailable" })
