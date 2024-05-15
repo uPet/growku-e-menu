@@ -9,6 +9,8 @@ import Products from "../../organisms/Products/Products";
 const HomePageView = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const menuContentRef = useRef<HTMLDivElement>(null);
@@ -30,6 +32,11 @@ const HomePageView = () => {
         );
         setSelectedCategory(categoriesData[0].title);
         setProducts(categoriesData[0].products);
+        const allProducts = categoriesData.reduce(
+          (acc, category) => [...acc, ...category.products],
+          [] as Product[]
+        );
+        setAllProducts(allProducts);
       } catch (error) {
         // TODO: handle the error here!
         console.error("Error fetching data:", error);
@@ -52,20 +59,26 @@ const HomePageView = () => {
   };
 
   return (
-    <div className="layout">
-      <h1 className="page-header">
-        {process.env.REACT_APP_SHOPIFY_STOREFRONT_NAME}
-      </h1>
-      <Menu
-        contentRef={menuContentRef}
-        items={categories.map((category) => category.title)}
-        selectedItem={selectedCategory}
-        onClick={onCategoryChange}
-      >
-        <h2>{selectedCategory}</h2>
-        <Products products={products} />
-      </Menu>
-    </div>
+    <>
+      <div className="layout">
+        <h1 className="page-header">
+          {process.env.REACT_APP_SHOPIFY_STOREFRONT_NAME}
+        </h1>
+        <Menu
+          contentRef={menuContentRef}
+          items={categories.map((category) => category.title)}
+          selectedItem={selectedCategory}
+          onClick={onCategoryChange}
+        >
+          <h2>{selectedCategory}</h2>
+          <Products products={products} />
+        </Menu>
+      </div>
+      {/* Render all the products so images are preloaded */}
+      <div className="" style={{ display: "none" }}>
+        <Products products={allProducts} />
+      </div>
+    </>
   );
 };
 
