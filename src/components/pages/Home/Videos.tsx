@@ -11,7 +11,7 @@ const Videos = ({ allVideos }: { allVideos: string[] }) => {
   };
 
   return (
-    <div style={{ display: "none" }}>
+    <div>
       {allVideos.map((videoUrl, index) => (
         <Video
           key={videoUrl}
