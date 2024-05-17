@@ -43,6 +43,7 @@ const ProductModal = ({
                 <video
                   crossOrigin="anonymous"
                   controls
+                  muted
                   className="modal-media"
                   style={{ maxWidth: item.width, maxHeight: item.height }}
                 >

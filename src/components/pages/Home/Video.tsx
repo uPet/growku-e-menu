@@ -24,6 +24,7 @@ const Video = ({
     }
   }, [autoPlay, onEnded]);
 
+  // TODO: we should add width and height props
   return (
     <video ref={videoRef} crossOrigin="anonymous" controls muted>
       <source src={url} type="video/mp4" />
