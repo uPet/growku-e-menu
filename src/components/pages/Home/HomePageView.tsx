@@ -44,6 +44,8 @@ const HomePageView = () => {
       console.log("videos onEnded handlers assignments?");
       video.addEventListener("ended", () => handleVideoEnd(index));
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videos]);
 
   useEffect(() => {
