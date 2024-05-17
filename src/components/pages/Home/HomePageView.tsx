@@ -7,8 +7,8 @@ import { Product } from "../../../model/product";
 import Products from "../../organisms/Products/Products";
 
 const HomePageView = () => {
-  // const [videos, setVideos] = useState<HTMLVideoElement[]>([]);
-  // const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [videos, setVideos] = useState<HTMLVideoElement[]>([]);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -23,35 +23,35 @@ const HomePageView = () => {
     }
   };
 
-  // const handleVideoEnd = (index: number) => {
-  //   console.log("video ends with index :>> ", index);
-  //   // Move to the next video if available
-  //   if (index < videos.length - 1) {
-  //     setCurrentVideoIndex(index + 1);
-  //   }
-  // };
+  const handleVideoEnd = (index: number) => {
+    console.log("video ends with index :>> ", index);
+    // Move to the next video if available
+    if (index < videos.length - 1) {
+      setCurrentVideoIndex(index + 1);
+    }
+  };
 
-  // useEffect(() => {
-  //   if (!videos) return;
+  useEffect(() => {
+    if (!videos) return;
 
-  //   videos[currentVideoIndex]?.play();
-  // }, [currentVideoIndex, videos]);
+    videos[currentVideoIndex]?.play();
+  }, [currentVideoIndex, videos]);
 
-  // useEffect(() => {
-  //   if (!videos) return;
+  useEffect(() => {
+    if (!videos) return;
 
-  //   videos.forEach((video, index) => {
-  //     console.log("videos onEnded handlers assignments?");
-  //     video.addEventListener("ended", () => handleVideoEnd(index));
-  //   });
-  // }, [videos]);
+    videos.forEach((video, index) => {
+      console.log("videos onEnded handlers assignments?");
+      video.addEventListener("ended", () => handleVideoEnd(index));
+    });
+  }, [videos]);
 
-  // useEffect(() => {
-  //   if (!categories) return;
-  //   const allVideos = document.querySelectorAll("video");
-  //   console.log("allVideos :>> ", allVideos);
-  //   setVideos(allVideos as unknown as HTMLVideoElement[]);
-  // }, [categories]);
+  useEffect(() => {
+    if (!categories) return;
+    const allVideos = document.querySelectorAll("video");
+    console.log("allVideos :>> ", allVideos);
+    setVideos(allVideos as unknown as HTMLVideoElement[]);
+  }, [categories]);
 
   useEffect(() => {
     async function fetchCategoriesWithProducts() {
