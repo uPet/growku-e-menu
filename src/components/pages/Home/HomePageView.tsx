@@ -31,6 +31,8 @@ const HomePageView = () => {
     }
   };
 
+  console.log('re-deploy trigger')
+
   useEffect(() => {
     if (!videos) return;
 
