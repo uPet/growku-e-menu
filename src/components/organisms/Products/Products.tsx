@@ -8,7 +8,7 @@ const Products = ({
   categoryProducts,
 }: {
   allProducts: Product[];
-  categoryProducts: Product[];
+  categoryProducts?: Product[];
 }) => {
   // As the product could exists in multiple categories, we remove the duplicated products
   const uniqueProducts = allProducts.filter(
@@ -19,7 +19,7 @@ const Products = ({
   return (
     <div className="cards-wrapper">
       {uniqueProducts.map((product, index) => {
-        const shouldBeHidden = !categoryProducts.some(
+        const shouldBeHidden = !categoryProducts?.some(
           (categoryProduct) => categoryProduct.title === product.title
         );
         return (

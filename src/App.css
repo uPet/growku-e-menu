@@ -25,6 +25,9 @@ By default the styles are for tablets and larger screens.
   --color-button-text: 255, 255, 255;
 
   --color-link: 18, 18, 18;
+
+  --color-error-text: 95, 33, 32;
+  --color-error-background: 253, 237, 237;
 }
 
 h1,
