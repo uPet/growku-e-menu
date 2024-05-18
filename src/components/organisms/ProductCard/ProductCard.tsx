@@ -9,11 +9,14 @@ import CardContent from "../../atoms/CardContent/CardContent";
 import { Product } from "../../../model/product";
 import ProductModal from "../ProductModal/ProductModal";
 
-interface ProductCardProps {
+type ProductCardProps = {
   product: Product;
-}
+} & React.ImgHTMLAttributes<HTMLDivElement>;
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  ...cardProps
+}: ProductCardProps) {
   const productModalRef = useRef<HTMLDivElement>(null);
 
   const openModal = () => {
@@ -32,7 +35,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <Card>
+      <Card {...cardProps}>
         <CardActionArea onClick={() => openModal()}>
           <CardContent>
             <h3 className="h5">{product.title}</h3>
