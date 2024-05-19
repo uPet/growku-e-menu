@@ -49,7 +49,7 @@ const HomePageView = () => {
   }, [categories]);
 
   // Custom hook to autoplay videos so we can preload them
-  useAutoPlayVideo({ allProducts });
+  useAutoPlayVideo(Boolean(allProducts.length));
 
   const getProductsByCategory = () => {
     if (!categories || !selectedCategory) return;
@@ -76,7 +76,7 @@ const HomePageView = () => {
           {process.env.REACT_APP_SHOPIFY_STOREFRONT_NAME}
         </h1>
         <Menu
-          contentRef={menuContentRef}
+          menuContentProps={{ ref: menuContentRef }}
           items={categories.map((category) => category.title)}
           selectedItem={selectedCategory}
           onClick={onCategoryChange}
