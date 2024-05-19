@@ -3,20 +3,24 @@ import React from "react";
 import "./menu.css";
 
 interface MenuProps {
-  contentRef: React.RefObject<HTMLDivElement>;
+  menuContentProps?: React.HTMLProps<HTMLDivElement>;
   items: string[];
   selectedItem: string;
   onClick?: (item: string) => void;
   children?: React.ReactNode;
 }
-// TODO: pass the props to the content instead of only  passing the ref
+
 const Menu: React.FC<MenuProps> = ({
-  contentRef,
+  menuContentProps: {
+    className: menuContentClassName,
+    ...restMenuContentProps
+  } = {},
   items,
   selectedItem,
   onClick,
   children,
 }) => {
+
   return (
     <div className="menu">
       <div className="menu-list">
@@ -27,7 +31,7 @@ const Menu: React.FC<MenuProps> = ({
               className={`menu-item ${selectedItem === item ? "active" : ""}`}
               onClick={(e) => {
                 e.preventDefault();
-                onClick?.(item)
+                onClick?.(item);
               }}
             >
               {item}
@@ -38,7 +42,10 @@ const Menu: React.FC<MenuProps> = ({
           </div>
         ))}
       </div>
-      <div className="menu-content" ref={contentRef}>
+      <div
+        className={`menu-content ${menuContentClassName}`}
+        {...restMenuContentProps}
+      >
         {children}
       </div>
     </div>
