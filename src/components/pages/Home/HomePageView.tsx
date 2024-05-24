@@ -84,7 +84,7 @@ const HomePageView = () => {
           <h2>{selectedCategory}</h2>
           <Products
             allProducts={allProducts}
-            categoryProducts={getProductsByCategory()}
+            categoryProducts={getProductsByCategory() || []}
           />
         </Menu>
       </div>
