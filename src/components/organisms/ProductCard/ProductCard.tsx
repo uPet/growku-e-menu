@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import "./productCard.css";
 
@@ -11,13 +11,34 @@ import ProductModal from "../ProductModal/ProductModal";
 
 type ProductCardProps = {
   product: Product;
+  productIndex: number; // This is the product index per products of a category
+  isLastProduct: boolean;
+  shownProductIndex: number | null;
+  setShownProductIndex: React.Dispatch<React.SetStateAction<number | null>>;
 } & React.ImgHTMLAttributes<HTMLDivElement>;
 
 export default function ProductCard({
   product,
+  productIndex,
+  isLastProduct,
+  shownProductIndex,
+  setShownProductIndex,
   ...cardProps
 }: ProductCardProps) {
   const productModalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (productIndex === undefined) return;
+
+    const isCurrentProductModal = productIndex === shownProductIndex;
+    if (isCurrentProductModal) {
+      openModal();
+      setShownProductIndex(productIndex);
+    } else {
+      closeModal();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shownProductIndex, productIndex]);
 
   const openModal = () => {
     document.body.style.overflow = "hidden";
@@ -57,6 +78,13 @@ export default function ProductCard({
         product={product}
         productModalRef={productModalRef}
         key={product.title}
+        onSwipeLeft={
+          () => setShownProductIndex(isLastProduct ? null : productIndex + 1)
+          // TODO: check if we need to hide the modal on the last modal or no!
+        }
+        onSwipeRight={() =>
+          setShownProductIndex(productIndex === 0 ? null : productIndex - 1)
+        }
       />
     </>
   );
