@@ -43,14 +43,16 @@ export default function ProductCard({
   const openModal = () => {
     document.body.style.overflow = "hidden";
     if (productModalRef.current) {
-      productModalRef.current.style.visibility = "visible";
+      productModalRef.current.classList.remove("product-modal-close");
+      productModalRef.current.classList.add("product-modal-open");
     }
   };
 
   const closeModal = () => {
     document.body.style.overflow = "";
     if (productModalRef.current) {
-      productModalRef.current.style.visibility = "hidden";
+      productModalRef.current.classList.add("product-modal-close");
+      productModalRef.current.classList.remove("product-modal-open");
     }
   };
 
