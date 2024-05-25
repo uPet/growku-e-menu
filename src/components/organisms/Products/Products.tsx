@@ -35,7 +35,9 @@ const Products = ({
             className={shouldBeHidden ? "hidden" : ""}
             key={`${product.title}-${index}`}
             product={product}
-            productIndex={productCategoryIndex}
+            productIndex={
+              productCategoryIndex !== -1 ? productCategoryIndex : null
+            }
             isLastProduct={index === categoryProducts?.length - 1}
             shownProductIndex={shownProductIndex}
             setShownProductIndex={setShownProductIndex}

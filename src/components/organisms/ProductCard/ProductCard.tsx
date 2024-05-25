@@ -11,7 +11,7 @@ import ProductModal from "../ProductModal/ProductModal";
 
 type ProductCardProps = {
   product: Product;
-  productIndex: number; // This is the product index per products of a category
+  productIndex: number | null; // This is the product index per products of a category
   isLastProduct: boolean;
   shownProductIndex: number | null;
   setShownProductIndex: React.Dispatch<React.SetStateAction<number | null>>;
@@ -33,16 +33,29 @@ export default function ProductCard({
     const isCurrentProductModal = productIndex === shownProductIndex;
     if (isCurrentProductModal) {
       openModal();
-      setShownProductIndex(productIndex);
     } else {
       closeModal();
+    }
+
+    // TODO: we could split this into another useEffect
+    if (shownProductIndex !== null && shownProductIndex !== -1) {
+      const isPreviousProductModal = productIndex === shownProductIndex - 1;
+
+      if (isPreviousProductModal && productModalRef.current) {
+        productModalRef.current.classList.add("previous-product-modal");
+      } else {
+        productModalRef.current?.classList.remove("previous-product-modal");
+      }
+    } else {
+      productModalRef.current?.classList.remove("previous-product-modal");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shownProductIndex, productIndex]);
 
   const openModal = () => {
     document.body.style.overflow = "hidden";
-    if (productModalRef.current) {
+    setShownProductIndex(productIndex);
+    if (productModalRef.current && productIndex !== null) {
       productModalRef.current.classList.remove("product-modal-close");
       productModalRef.current.classList.add("product-modal-open");
     }
@@ -76,17 +89,25 @@ export default function ProductCard({
         </CardActionArea>
       </Card>
       <ProductModal
-        closeModal={closeModal}
+        closeModal={() => {
+          closeModal();
+          setShownProductIndex(null);
+        }}
         product={product}
         productModalRef={productModalRef}
         key={product.title}
-        onSwipeLeft={
-          () => setShownProductIndex(isLastProduct ? null : productIndex + 1)
-          // TODO: check if we need to hide the modal on the last modal or no!
-        }
-        onSwipeRight={() =>
-          setShownProductIndex(productIndex === 0 ? null : productIndex - 1)
-        }
+        onSwipeLeft={() => {
+          if (productIndex !== null) {
+            setShownProductIndex(
+              isLastProduct ? productIndex : productIndex + 1
+            );
+          }
+        }}
+        onSwipeRight={() => {
+          if (productIndex !== null) {
+            setShownProductIndex(productIndex === 0 ? null : productIndex - 1);
+          }
+        }}
       />
     </>
   );
