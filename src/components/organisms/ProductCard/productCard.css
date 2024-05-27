@@ -11,3 +11,20 @@
 .product-image {
   max-width: 100%;
 }
+
+.modal-overlay {
+  transition: transform 0.3s;
+  transform: translateX(100%);
+}
+
+.modal-overlay.product-modal-close {
+  transform: translateX(100%);
+}
+
+.modal-overlay.product-modal-close.previous-product-modal {
+  transform: translateX(-100%);
+}
+
+.modal-overlay.product-modal-open {
+  transform: translateX(0);
+}

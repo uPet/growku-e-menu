@@ -6,13 +6,12 @@ import Card from "../../atoms/Card/Card";
 import CardActionArea from "../../atoms/CardActionArea/CardActionArea";
 import CardMedia from "../../atoms/CardMedia/CardMedia";
 import CardContent from "../../atoms/CardContent/CardContent";
-import { Product } from "../../../model/product";
 import ProductModal from "../ProductModal/ProductModal";
+import { ProductCardType } from "../../pages/Home/HomePageView";
 
 type ProductCardProps = {
-  product: Product;
-  productIndex: number; // This is the product index per products of a category
-  isLastProduct: boolean;
+  product: ProductCardType;
+  productIndex: number | null;
   shownProductIndex: number | null;
   setShownProductIndex: React.Dispatch<React.SetStateAction<number | null>>;
 } & React.ImgHTMLAttributes<HTMLDivElement>;
@@ -20,38 +19,63 @@ type ProductCardProps = {
 export default function ProductCard({
   product,
   productIndex,
-  isLastProduct,
   shownProductIndex,
   setShownProductIndex,
   ...cardProps
 }: ProductCardProps) {
   const productModalRef = useRef<HTMLDivElement>(null);
 
+  // Show or hide the modal when the user swipe left or right
   useEffect(() => {
     if (productIndex === undefined) return;
 
-    const isCurrentProductModal = productIndex === shownProductIndex;
-    if (isCurrentProductModal) {
+    const isCurrentProductModalShown = productIndex === shownProductIndex;
+    if (isCurrentProductModalShown) {
       openModal();
-      setShownProductIndex(productIndex);
     } else {
       closeModal();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shownProductIndex, productIndex]);
 
+  // Identify if the current product is the previous product in the category
+  useEffect(() => {
+    if (!productModalRef.current) return;
+
+    if (shownProductIndex === null) {
+      productModalRef.current.classList.remove("previous-product-modal");
+      return;
+    }
+
+    const isLastProductInPreviousCategory = product.isLastProductOfCategory;
+
+    const isThisPreviousProductModal =
+      !isLastProductInPreviousCategory &&
+      productIndex === shownProductIndex - 1;
+
+    if (isThisPreviousProductModal) {
+      productModalRef.current.classList.add("previous-product-modal");
+    } else {
+      productModalRef.current?.classList.remove("previous-product-modal");
+    }
+  }, [shownProductIndex, productIndex, product.isLastProductOfCategory]);
+
   const openModal = () => {
     document.body.style.overflow = "hidden";
-    if (productModalRef.current) {
-      productModalRef.current.style.visibility = "visible";
-    }
+    setShownProductIndex(productIndex);
+    if (!productModalRef.current || productIndex === null) return;
+
+    productModalRef.current.classList.remove("product-modal-close");
+    productModalRef.current.classList.add("product-modal-open");
   };
 
   const closeModal = () => {
     document.body.style.overflow = "";
-    if (productModalRef.current) {
-      productModalRef.current.style.visibility = "hidden";
-    }
+    if (!productModalRef.current) return;
+
+    productModalRef.current.classList.add("product-modal-close");
+    productModalRef.current.classList.remove("product-modal-open");
   };
 
   return (
@@ -74,17 +98,27 @@ export default function ProductCard({
         </CardActionArea>
       </Card>
       <ProductModal
-        closeModal={closeModal}
+        closeModal={() => {
+          closeModal();
+          setShownProductIndex(null);
+        }}
         product={product}
         productModalRef={productModalRef}
         key={product.title}
-        onSwipeLeft={
-          () => setShownProductIndex(isLastProduct ? null : productIndex + 1)
-          // TODO: check if we need to hide the modal on the last modal or no!
-        }
-        onSwipeRight={() =>
-          setShownProductIndex(productIndex === 0 ? null : productIndex - 1)
-        }
+        onSwipeLeft={() => {
+          if (productIndex === null) return;
+
+          setShownProductIndex(
+            product.isLastProductOfCategory ? productIndex : productIndex + 1
+          );
+        }}
+        onSwipeRight={() => {
+          if (productIndex === null) return;
+
+          setShownProductIndex(
+            product.isFirstProductOfCategory ? null : productIndex - 1
+          );
+        }}
       />
     </>
   );
