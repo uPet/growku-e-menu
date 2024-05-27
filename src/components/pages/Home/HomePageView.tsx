@@ -8,10 +8,17 @@ import Products from "../../organisms/Products/Products";
 import Toaster from "../../atoms/Toaster.tsx/Toaster";
 import useAutoPlayVideo from "../../../hooks/useAutoPlayVideo";
 
+export type ProductCardType = Product & {
+  productIndexOfCategory: number;
+  isFirstProductOfCategory: boolean;
+  isLastProductOfCategory: boolean;
+  category: string;
+};
+
 const HomePageView = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<ProductCardType[]>([]);
   const [error, setError] = useState<string>("");
 
   const menuContentRef = useRef<HTMLDivElement>(null);
@@ -25,7 +32,7 @@ const HomePageView = () => {
         setCategories(
           categoriesData.sort((a, b) => a.title.localeCompare(b.title))
         );
-        setSelectedCategory(categoriesData[0]?.title);
+        setSelectedCategory(categoriesData?.[0]?.title);
       } catch (error: any) {
         setError(
           `Error fetching data. Please try again later, ${error?.message}`
@@ -40,26 +47,26 @@ const HomePageView = () => {
   useEffect(() => {
     if (!categories || allProducts.length) return;
 
-    const allAvailableProducts = categories.reduce(
-      (acc, category) => [...acc, ...category.products],
-      [] as Product[]
+    const allAvailableProducts = categories.reduce<ProductCardType[]>(
+      (acc, category) => {
+        const products = category.products.map((product) => ({
+          ...product,
+          category: category.title,
+          productIndexOfCategory: category.products.indexOf(product),
+          isFirstProductOfCategory: category.products.indexOf(product) === 0,
+          isLastProductOfCategory:
+            category.products.indexOf(product) === category.products.length - 1,
+        }));
+        return [...acc, ...products];
+      },
+      []
     );
+
     setAllProducts(allAvailableProducts);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories]);
+  }, [categories, allProducts.length]);
 
   // Custom hook to autoplay videos so we can preload them
   useAutoPlayVideo(Boolean(allProducts.length));
-
-  const getProductsByCategory = () => {
-    if (!categories || !selectedCategory) return;
-
-    const products = categories.find(
-      (category) => category.title === selectedCategory
-    )?.products;
-
-    return products;
-  };
 
   const onCategoryChange = (categoryTitle: string) => {
     setSelectedCategory(categoryTitle);
@@ -83,8 +90,8 @@ const HomePageView = () => {
         >
           <h2>{selectedCategory}</h2>
           <Products
-            allProducts={allProducts}
-            categoryProducts={getProductsByCategory() || []}
+            items={allProducts}
+            selectedCategory={selectedCategory}
           />
         </Menu>
       </div>
