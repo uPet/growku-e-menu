@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from "react";
 
 export default function SplashScreen() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isSplashVisible, setIsSplashVisible] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-    document.addEventListener("visibilitychange", () => {
-      setIsLoading(true);
-      if (document.visibilityState === "visible") {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 2000);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        setIsSplashVisible(true);
       }
-    });
+      if (document.visibilityState === "visible") {
+        setIsSplashVisible(true);
+        setTimeout(() => {
+          setIsSplashVisible(false);
+        }, 1500);
+      }
+    };
+    
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
-  return isLoading ? (
+  return isSplashVisible ? (
     <div
       style={{
         display: "flex",
