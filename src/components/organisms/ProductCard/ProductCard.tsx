@@ -35,6 +35,8 @@ export default function ProductCard({
     } else {
       closeModal();
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shownProductIndex, productIndex]);
 
   // Identify if the current product is the previous product in the category
