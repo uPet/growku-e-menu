@@ -4,6 +4,9 @@ export default function SplashScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
     document.addEventListener("visibilitychange", () => {
       setIsLoading(true);
       if (document.visibilityState === "visible") {
