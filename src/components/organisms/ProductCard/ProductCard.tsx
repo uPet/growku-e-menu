@@ -24,6 +24,7 @@ export default function ProductCard({
   ...cardProps
 }: ProductCardProps) {
   const productModalRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   // Show or hide the modal when the user swipe left or right
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function ProductCard({
   }, [shownProductIndex, productIndex, product.isLastProductOfCategory]);
 
   const openModal = () => {
+    setIsModalOpen(true);
     document.body.style.overflow = "hidden";
     setShownProductIndex(productIndex);
     if (!productModalRef.current || productIndex === null) return;
@@ -71,6 +73,7 @@ export default function ProductCard({
   };
 
   const closeModal = () => {
+    setIsModalOpen(false);
     document.body.style.overflow = "";
     if (!productModalRef.current) return;
 
@@ -98,6 +101,7 @@ export default function ProductCard({
         </CardActionArea>
       </Card>
       <ProductModal
+        isModalOpen={isModalOpen}
         closeModal={() => {
           closeModal();
           setShownProductIndex(null);
