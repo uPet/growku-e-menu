@@ -7,17 +7,20 @@ import "./productModal.css";
 const ProductModal = ({
   product,
   productModalRef,
+  isModalOpen,
   closeModal,
   onSwipeLeft,
   onSwipeRight,
 }: {
   product: Product;
   productModalRef: React.RefObject<HTMLDivElement>;
+  isModalOpen: boolean;
   closeModal?: () => void;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
 }) => {
   const startX = useRef<number | null>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const handleTouchStart = (e: TouchEvent) => {
     startX.current = e.touches[0].clientX;
@@ -55,10 +58,30 @@ const ProductModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productModalRef]);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      videoRefs.current.forEach((video) => {
+        if (video) {
+          video.play();
+          video.loop = true;
+        }
+      });
+    }
+  }, [isModalOpen, videoRefs]);
+
+  const onCloseModal = () => {
+    closeModal?.();
+    videoRefs.current.forEach((video) => {
+      if (video) {
+        video.pause();
+      }
+    });
+  };
+
   return (
-    <div className="modal-overlay" ref={productModalRef} onClick={closeModal}>
+    <div className="modal-overlay" ref={productModalRef} onClick={onCloseModal}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={closeModal}>
+        <button className="close-button" onClick={onCloseModal}>
           <CloseIcon />
         </button>
         <h3 className="h5">{product.title}</h3>
@@ -81,6 +104,7 @@ const ProductModal = ({
                 />
               ) : (
                 <video
+                  ref={(el) => (videoRefs.current[index] = el)}
                   crossOrigin="anonymous"
                   controls
                   muted
