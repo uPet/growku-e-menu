@@ -42,7 +42,7 @@ export default function useAutoPlayVideo(areVideosRendered: boolean) {
   // Set all available videos
   useEffect(() => {
     if (!areVideosRendered) return;
-    const allVideos = document.querySelectorAll("video");
+    const allVideos = document.querySelectorAll("video:not(.ignore-autoplay)");
     setVideos(allVideos as unknown as HTMLVideoElement[]);
   }, [areVideosRendered]);
 
