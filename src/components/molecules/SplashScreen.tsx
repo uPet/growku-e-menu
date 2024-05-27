@@ -5,17 +5,16 @@ export default function SplashScreen() {
 
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        setIsSplashVisible(true);
-      }
       if (document.visibilityState === "visible") {
         setIsSplashVisible(true);
         setTimeout(() => {
           setIsSplashVisible(false);
         }, 1500);
+      } else {
+        setIsSplashVisible(true);
       }
     };
-    
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
