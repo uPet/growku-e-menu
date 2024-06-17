@@ -1,4 +1,4 @@
-import { Product as ShopifyProduct } from "shopify-buy";
+import { Product as ShopifyProduct, Metafield } from "shopify-buy";
 
 export type Price = {
   amount: number;
@@ -48,5 +48,6 @@ export type ShopifyCollectionQuery = {
         };
       }[];
     };
+    metafields: Metafield[]
   };
 };
