@@ -12,16 +12,6 @@ query collections($first: Int, $language: LanguageCode!) @inContext(language: $l
       node {
         id
         title
-        metafields(identifiers: [
-          {namespace: "custom", key: "collection_order"}
-        ]) {
-          id
-          key
-          namespace
-          description
-          type
-          value
-        }
         products(first: 100) {
           edges {
             node {
@@ -161,24 +151,6 @@ const shopifyCollectionToCategory = (
   };
 };
 
-const sortCollections = (
-  collections: ShopifyCollectionQuery[]
-): ShopifyCollectionQuery[] => {
-  return collections.sort(
-    (a: ShopifyCollectionQuery, b: ShopifyCollectionQuery) => {
-      const orderA =
-        a.node.metafields?.[0]?.key === "collection_order"
-          ? parseInt(a.node.metafields?.[0].value, 10)
-          : Number.MAX_SAFE_INTEGER;
-      const orderB =
-        b.node.metafields?.[0]?.key === "collection_order"
-          ? parseInt(b.node.metafields?.[0].value, 10)
-          : Number.MAX_SAFE_INTEGER;
-      return orderA - orderB;
-    }
-  );
-};
-
 export const getCategoriesData = async (
   language: LanguageType = "EN"
 ): Promise<Category[] | undefined> => {
@@ -207,26 +179,7 @@ export const getCategoriesData = async (
     return;
   }
 
-  // check if there is at lease one collection that has the collection_order metafield
-  const hasOrder = data.data.collections.edges.some(
-    (edge: ShopifyCollectionQuery) =>
-      edge.node.metafields?.[0]?.key === "collection_order"
-  );
-
-  if (!hasOrder) {
-    // sort them alphabetically
-    const categories: Category[] = data.data.collections.edges
-      .filter(
-        (edge: ShopifyCollectionQuery) => edge.node.products.edges.length > 0
-      )
-      .map((edge: ShopifyCollectionQuery) => shopifyCollectionToCategory(edge));
-
-    return categories.sort((a, b) => a.title.localeCompare(b.title));
-  }
-
-  const sortedCollections = sortCollections(data.data.collections.edges);
-
-  return sortedCollections
+  return data.data.collections.edges
     .filter(
       (edge: ShopifyCollectionQuery) => edge.node.products.edges.length > 0
     )

@@ -29,7 +29,9 @@ const HomePageView = () => {
         const categoriesData = await getCategoriesData();
         if (!categoriesData) return;
         setError("");
-        setCategories(categoriesData);
+        setCategories(
+          categoriesData.sort((a, b) => a.title.localeCompare(b.title))
+        );
         setSelectedCategory(categoriesData?.[0]?.title);
       } catch (error: any) {
         setError(
@@ -87,7 +89,10 @@ const HomePageView = () => {
           onClick={onCategoryChange}
         >
           <h2>{selectedCategory}</h2>
-          <Products items={allProducts} selectedCategory={selectedCategory} />
+          <Products
+            items={allProducts}
+            selectedCategory={selectedCategory}
+          />
         </Menu>
       </div>
       <Toaster
