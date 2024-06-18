@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { Product } from "../../../model/product";
 import CloseIcon from "../../atoms/CloseIcon";
 
@@ -19,6 +19,7 @@ const ProductModal = ({
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
 }) => {
+  console.log('ProductModal', product.title)
   const startX = useRef<number | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -123,4 +124,14 @@ const ProductModal = ({
   );
 };
 
-export default ProductModal;
+// const areEqual = (prevProps: any, nextProps: any) => {
+//   // console.log(
+//   //   "ProductModal areEqual",
+//   //   prevProps.product.handle,
+//   //   nextProps.product.handle,
+//   //   prevProps.product === nextProps.product
+//   // );
+//   return prevProps.product === nextProps.product;
+// };
+
+export default memo(ProductModal);

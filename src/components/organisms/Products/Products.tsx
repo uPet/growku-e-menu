@@ -21,7 +21,9 @@ const Products = ({
         const shouldBeHidden = product.category !== selectedCategory;
         return (
           <ProductCard
+            shouldBeHidden={index === shownProductIndex}
             className={shouldBeHidden ? "hidden" : ""}
+            shouldBeHide={shouldBeHidden}
             key={`${product.title}-${index}`}
             product={product}
             productIndex={index}
