@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 
 import "./productCard.css";
 
@@ -10,13 +10,17 @@ import ProductModal from "../ProductModal/ProductModal";
 import { ProductCardType } from "../../pages/Home/HomePageView";
 
 type ProductCardProps = {
+  shouldBeHidden: boolean;
+  shouldBeHide: boolean;
   product: ProductCardType;
   productIndex: number | null;
   shownProductIndex: number | null;
   setShownProductIndex: React.Dispatch<React.SetStateAction<number | null>>;
 } & React.ImgHTMLAttributes<HTMLDivElement>;
 
-export default function ProductCard({
+function ProductCard({
+  shouldBeHidden, // TODO: update the name
+  shouldBeHide, // TODO: update the name
   product,
   productIndex,
   shownProductIndex,
@@ -46,6 +50,7 @@ export default function ProductCard({
 
     if (shownProductIndex === null) {
       productModalRef.current.classList.remove("previous-product-modal");
+      productModalRef.current.classList.remove("next-product-modal");
       return;
     }
 
@@ -54,6 +59,16 @@ export default function ProductCard({
     const isThisPreviousProductModal =
       !isLastProductInPreviousCategory &&
       productIndex === shownProductIndex - 1;
+
+    const isThisNextProductModal =
+      !product.isLastProductOfCategory &&
+      productIndex === shownProductIndex + 1;
+
+    if (isThisNextProductModal) {
+      productModalRef.current.classList.add("next-product-modal");
+    } else {
+      productModalRef.current?.classList.remove("next-product-modal");
+    }
 
     if (isThisPreviousProductModal) {
       productModalRef.current.classList.add("previous-product-modal");
@@ -84,7 +99,7 @@ export default function ProductCard({
   return (
     <>
       <Card {...cardProps}>
-        <CardActionArea onClick={() => openModal()}>
+        <CardActionArea onClick={openModal}>
           <CardContent>
             <h3 className="h5">{product.title}</h3>
             <p>{product.description}</p>
@@ -118,7 +133,6 @@ export default function ProductCard({
         }}
         onSwipeRight={() => {
           if (productIndex === null) return;
-
           setShownProductIndex(
             product.isFirstProductOfCategory ? null : productIndex - 1
           );
@@ -127,3 +141,44 @@ export default function ProductCard({
     </>
   );
 }
+
+// TODO: Refactor this function to be retable and clear
+const areEqual = (prevProps: ProductCardProps, nextProps: ProductCardProps) => {
+  const equal =
+    prevProps.product === nextProps.product &&
+    prevProps.productIndex === nextProps.productIndex &&
+    prevProps.shownProductIndex !== nextProps.shownProductIndex &&
+    prevProps.shouldBeHidden === nextProps.shouldBeHidden;
+
+  if (
+    nextProps.shownProductIndex &&
+    nextProps.shownProductIndex + 2 === nextProps.productIndex
+  ) {
+    // We need to re-render to update the component to remove the previous-product-modal class
+    return false;
+  }
+
+  if (
+    nextProps.shownProductIndex &&
+    (nextProps.shownProductIndex - 2 === nextProps.productIndex ||
+      nextProps.shownProductIndex - 1 === nextProps.productIndex)
+  ) {
+    // We need to re-render to update the component to remove the previous-product-modal class
+    return false;
+  }
+
+  if (prevProps.shouldBeHide !== nextProps.shouldBeHide) {
+    return false;
+  }
+
+  if (
+    prevProps.shouldBeHide === nextProps.shouldBeHide &&
+    prevProps.shownProductIndex === nextProps.shownProductIndex
+  ) {
+    return true;
+  }
+
+  return equal;
+};
+
+export default memo(ProductCard, areEqual);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import { Product } from "../../../model/product";
 import CloseIcon from "../../atoms/CloseIcon";
 
@@ -27,8 +27,8 @@ const ProductModal = ({
   };
 
   const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
     if (!startX.current) return;
-
     const currentX = e.touches[0].clientX;
     const diffX = startX.current - currentX;
     const isSwipeLeft = diffX > 50;
@@ -123,4 +123,4 @@ const ProductModal = ({
   );
 };
 
-export default ProductModal;
+export default memo(ProductModal);
