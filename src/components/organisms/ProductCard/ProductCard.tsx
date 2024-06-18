@@ -19,8 +19,8 @@ type ProductCardProps = {
 } & React.ImgHTMLAttributes<HTMLDivElement>;
 
 function ProductCard({
-  shouldBeHidden,
-  shouldBeHide,
+  shouldBeHidden, // TODO: update the name
+  shouldBeHide, // TODO: update the name
   product,
   productIndex,
   shownProductIndex,
@@ -50,6 +50,7 @@ function ProductCard({
 
     if (shownProductIndex === null) {
       productModalRef.current.classList.remove("previous-product-modal");
+      productModalRef.current.classList.remove("next-product-modal");
       return;
     }
 
@@ -58,6 +59,16 @@ function ProductCard({
     const isThisPreviousProductModal =
       !isLastProductInPreviousCategory &&
       productIndex === shownProductIndex - 1;
+
+    const isThisNextProductModal =
+      !product.isLastProductOfCategory &&
+      productIndex === shownProductIndex + 1;
+
+    if (isThisNextProductModal) {
+      productModalRef.current.classList.add("next-product-modal");
+    } else {
+      productModalRef.current?.classList.remove("next-product-modal");
+    }
 
     if (isThisPreviousProductModal) {
       productModalRef.current.classList.add("previous-product-modal");
@@ -115,7 +126,6 @@ function ProductCard({
         key={product.title}
         onSwipeLeft={() => {
           if (productIndex === null) return;
-          console.log("swipe left");
 
           setShownProductIndex(
             product.isLastProductOfCategory ? productIndex : productIndex + 1
@@ -123,7 +133,6 @@ function ProductCard({
         }}
         onSwipeRight={() => {
           if (productIndex === null) return;
-          console.log("swipe right");
           setShownProductIndex(
             product.isFirstProductOfCategory ? null : productIndex - 1
           );
@@ -133,46 +142,21 @@ function ProductCard({
   );
 }
 
+// TODO: Refactor this function to be retable and clear
 const areEqual = (prevProps: ProductCardProps, nextProps: ProductCardProps) => {
   const equal =
     prevProps.product === nextProps.product &&
     prevProps.productIndex === nextProps.productIndex &&
     prevProps.shownProductIndex !== nextProps.shownProductIndex &&
     prevProps.shouldBeHidden === nextProps.shouldBeHidden;
-  // prevProps.shownProductIndex === nextProps.shownProductIndex;
 
-  // if (
-  //   prevProps.product.handle === "arepita-con-chicharron-y-chorizo" ||
-  //   nextProps.product.handle === "arepita-con-chicharron-y-chorizo" ||
-  //   prevProps.product.title === "Crunchy Arepa con Pollo" ||
-  //   nextProps.product.title === "Crunchy Arepa con Pollo"
-  // ) {
-  //   console.log(
-  //     "ddddddddddddd prevProps",
-  //     prevProps.product.handle,
-  //     equal,
-  //     prevProps
-  //   );
-  //   console.log(
-  //     "ddddddddddddd nextProps",
-  //     nextProps.product.handle,
-  //     equal,
-  //     nextProps
-  //   );
-  // }
-
-  // if (
-  //    nextProps.shouldBeHide && prevProps.shouldBeHide !== nextProps.shouldBeHide
-  // ) {
-  //   return true;
-  // }
-
-  // if (
-  //   prevProps.product.title === "Sharing Picadita" ||
-  //   nextProps.product.title === "Sharing Picadita"
-  // ) {
-  //   console.log("gggggggggggg equal", equal, prevProps, nextProps);
-  // }
+  if (
+    nextProps.shownProductIndex &&
+    nextProps.shownProductIndex + 2 === nextProps.productIndex
+  ) {
+    // We need to re-render to update the component to remove the previous-product-modal class
+    return false;
+  }
 
   if (
     nextProps.shownProductIndex &&
@@ -184,43 +168,16 @@ const areEqual = (prevProps: ProductCardProps, nextProps: ProductCardProps) => {
   }
 
   if (prevProps.shouldBeHide !== nextProps.shouldBeHide) {
-    // console.log(
-    //   "false equal",
-    //   false,
-    //   prevProps.product.title,
-    //   nextProps.product.title
-    // );
     return false;
   }
 
-  // TODO: this breaks the swipe, we need to add another condition with it
   if (
     prevProps.shouldBeHide === nextProps.shouldBeHide &&
     prevProps.shownProductIndex === nextProps.shownProductIndex
   ) {
-    // console.log("true equal", true);
     return true;
   }
 
-  // (nextProps.isFirstProductOfCategory && nextProps.shownProductIndex === null)
-  // prevProps.productIndex !== nextProps.shownProductIndex;
-  // prevProps.shownProductIndex !== null;
-
-  // if (
-  //   nextProps.product.isFirstProductOfCategory &&
-  //   nextProps.shownProductIndex === null
-  // ) {
-  //   console.log(
-  //     "ProductCard areEqual>>>>>>>>>>>>>>>>>>",
-  //     false,
-  //     nextProps.product.title
-  //   );
-  //   return false;
-  // }
-
-  // if (!equal) {
-  //   console.log("equal", equal, prevProps.product.title, nextProps.product.title);
-  // }
   return equal;
 };
 

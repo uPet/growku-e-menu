@@ -19,7 +19,6 @@ const ProductModal = ({
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
 }) => {
-  console.log('ProductModal', product.title)
   const startX = useRef<number | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
@@ -28,8 +27,8 @@ const ProductModal = ({
   };
 
   const handleTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
     if (!startX.current) return;
-
     const currentX = e.touches[0].clientX;
     const diffX = startX.current - currentX;
     const isSwipeLeft = diffX > 50;
