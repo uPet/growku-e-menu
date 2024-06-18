@@ -123,14 +123,4 @@ const ProductModal = ({
   );
 };
 
-// const areEqual = (prevProps: any, nextProps: any) => {
-//   // console.log(
-//   //   "ProductModal areEqual",
-//   //   prevProps.product.handle,
-//   //   nextProps.product.handle,
-//   //   prevProps.product === nextProps.product
-//   // );
-//   return prevProps.product === nextProps.product;
-// };
-
 export default memo(ProductModal);
