@@ -4,7 +4,9 @@ import "./splashScreen.css";
 
 export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
-  const splashUrl = process.env.REACT_APP_SHOPIFY_STOREFRONT_SPLASH_URL;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const splashUrl = urlParams.get("video-url");
 
   const hideSplashAfterDelay = (delay = 1000) => {
     setTimeout(() => {
