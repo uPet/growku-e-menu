@@ -19,6 +19,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 // Set up App Shell-style routing
 const fileExtensionRegexp = new RegExp("/[^/?]+\\.[^/]+$");
 registerRoute(({ request, url }: { request: Request; url: URL }) => {
+  console.log('fileExtensionRegexp url :>> ', url);
   if (
     request.mode !== "navigate" ||
     url.pathname.startsWith("/_") ||
@@ -44,6 +45,25 @@ registerRoute(
   new StaleWhileRevalidate({
     cacheName: "videos",
     plugins: [new ExpirationPlugin({ maxEntries: 100 })], // Probably we need to adjust this number in the future.
+  })
+);
+
+// Cache Google Sheets API requests
+registerRoute(
+  ({ url }) => {
+    console.log("google url :>> ", url);
+    return (
+      (url.origin === "https://content.googleapis.com" &&
+        url.pathname.startsWith("/v4/rest")) ||
+      (url.origin === "https://content-sheets.googleapis.com" &&
+        url.pathname.startsWith("/v4/spreadsheets"))
+    );
+  },
+  new StaleWhileRevalidate({
+    cacheName: "google-sheets-cache",
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
+    ], // Cache up to 50 requests for 24 hours
   })
 );
 
