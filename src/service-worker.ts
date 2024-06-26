@@ -47,17 +47,18 @@ registerRoute(
   })
 );
 
-// https://content.googleapis.com/discovery/v1/apis/sheets/v4/rest
-// https://content-sheets.googleapis.com/v4/spreadsheets
-// https://content-sheets.googleapis.com/v4/spreadsheets
-
 // Cache Google Sheets API requests
 registerRoute(
-  ({ url }) => url.origin === 'https://content.googleapis.com' && url.pathname.startsWith('/v4/rest') ||
-  url.origin === 'https://content-sheets.googleapis.com' && url.pathname.startsWith('/v4/spreadsheets'),
+  ({ url }) =>
+    (url.origin === "https://content.googleapis.com" &&
+      url.pathname.startsWith("/v4/rest")) ||
+    (url.origin === "https://content-sheets.googleapis.com" &&
+      url.pathname.startsWith("/v4/spreadsheets")),
   new StaleWhileRevalidate({
-    cacheName: 'google-sheets-cache',
-    plugins: [new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 })], // Cache up to 50 requests for 24 hours
+    cacheName: "google-sheets-cache",
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
+    ], // Cache up to 50 requests for 24 hours
   })
 );
 
