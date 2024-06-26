@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from "react";
 
 import "./splashScreen.css";
+import { useConfig } from "../organisms/ConfigContext";
 
 export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
-  const splashUrl = process.env.REACT_APP_SHOPIFY_STOREFRONT_SPLASH_URL;
+  const { configData } = useConfig();
 
-  const hideSplashAfterDelay = (delay = 1000) => {
-    setTimeout(() => {
-      setIsSplashVisible(false);
-    }, delay);
-  };
+  const splashUrl = configData.find(
+    (item) => item.option === "video-url"
+  )?.value;
 
   useEffect(() => {
-    if (!splashUrl) {
-      hideSplashAfterDelay();
-    }
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         setIsSplashVisible(true);
-        if (!splashUrl) {
-          hideSplashAfterDelay();
-        }
       } else {
         setIsSplashVisible(false);
       }
@@ -37,7 +29,7 @@ export default function SplashScreen() {
 
   return isSplashVisible ? (
     <div className="splash-screen">
-      {splashUrl ? (
+      {splashUrl && (
         <video
           crossOrigin="anonymous"
           muted
@@ -48,8 +40,6 @@ export default function SplashScreen() {
           <source src={splashUrl} type="video/mp4" />
           Loading view, Your browser does not support the video tag.
         </video>
-      ) : (
-        <>Loading ...</>
       )}
     </div>
   ) : null;
