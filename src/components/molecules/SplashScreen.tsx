@@ -7,7 +7,7 @@ export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const { configData } = useConfig();
 
-  console.log('configData :>> ', configData);
+  console.log('configDataa :>> ', configData);
 
   const splashUrl = configData.find(
     (item) => item.option === "video-url"
