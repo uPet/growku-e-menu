@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 
 import "./splashScreen.css";
+import { useConfig } from "../organisms/ConfigContext";
 
 export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
+  const { configData } = useConfig();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const splashUrl = urlParams.get("video-url");
+  console.log('configData :>> ', configData);
+
+  const splashUrl = configData.find(
+    (item) => item.option === "video-url"
+  )?.value;
+
 
   const hideSplashAfterDelay = (delay = 1000) => {
     setTimeout(() => {
