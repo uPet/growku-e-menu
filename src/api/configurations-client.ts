@@ -1,6 +1,7 @@
 import { gapi } from "gapi-script";
 import { ConfigItem } from "../model/configurations";
 import { SheetsResponse } from "./model/GoogleSheets";
+import { Option } from "../model/configurations";
 
 export default class ConfigurationsClient {
   private apiKey: string;
@@ -63,7 +64,7 @@ export default class ConfigurationsClient {
 
       const result = response?.result;
       if (result.values) {
-        return result.values.slice(1).map((row: string[]): ConfigItem => {
+        return result.values.slice(1).map((row: Option[]): ConfigItem => {
           return {
             option: row[0],
             value: row[1],
