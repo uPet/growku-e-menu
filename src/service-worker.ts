@@ -4,10 +4,10 @@
 import CryptoJS from "crypto-js";
 import { Store, get, set } from "idb-keyval";
 import { clientsClaim } from "workbox-core";
-import { ExpirationPlugin } from "workbox-expiration";
+// import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+// import { StaleWhileRevalidate } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -30,60 +30,46 @@ registerRoute(({ request, url }: { request: Request; url: URL }) => {
   return true;
 }, createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html"));
 
-// Cache all images on the site
-registerRoute(
-  ({ request }: { request: Request }) => request.destination === "image",
-  new StaleWhileRevalidate({
-    cacheName: "all-images",
-    plugins: [new ExpirationPlugin({ maxEntries: 500 })], // Cache up to 500 images, assume we have max 100 products and each one has 5 images.
-  })
-);
+// // Cache all images on the site
+// registerRoute(
+//   ({ request }: { request: Request }) => request.destination === "image",
+//   new StaleWhileRevalidate({
+//     cacheName: "all-images",
+//     plugins: [new ExpirationPlugin({ maxEntries: 500 })], // Cache up to 500 images, assume we have max 100 products and each one has 5 images.
+//   })
+// );
 
-// Cache all videos on the site
-registerRoute(
-  ({ request }: { request: Request }) => request.destination === "video",
-  new StaleWhileRevalidate({
-    cacheName: "videos",
-    plugins: [new ExpirationPlugin({ maxEntries: 100 })], // Probably we need to adjust this number in the future.
-  })
-);
+// // Cache all videos on the site
+// registerRoute(
+//   ({ request }: { request: Request }) => request.destination === "video",
+//   new StaleWhileRevalidate({
+//     cacheName: "videos",
+//     plugins: [new ExpirationPlugin({ maxEntries: 100 })], // Probably we need to adjust this number in the future.
+//   })
+// );
 
-// Cache Google Sheets API requests
-registerRoute(
-  ({ url }) => {
-    console.log("google url :>> ", url);
-    return (
-      (url.origin === "https://content.googleapis.com" &&
-        url.pathname.startsWith("/v4/rest")) ||
-      (url.origin === "https://content-sheets.googleapis.com" &&
-        url.pathname.startsWith("/v4/spreadsheets"))
-    );
-  },
-  new StaleWhileRevalidate({
-    cacheName: "google-sheets-cache",
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
-    ], // Cache up to 50 requests for 24 hours
-  })
-);
-
-// Cache Google Sheets API requests
-registerRoute(
-  ({ url }) =>
-    (url.origin === "https://content.googleapis.com" &&
-      url.pathname.startsWith("/v4/rest")) ||
-    (url.origin === "https://content-sheets.googleapis.com" &&
-      url.pathname.startsWith("/v4/spreadsheets")),
-  new StaleWhileRevalidate({
-    cacheName: "google-sheets-cache",
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
-    ], // Cache up to 50 requests for 24 hours
-  })
-);
+// // Cache Google Sheets API requests
+// registerRoute(
+//   ({ url }) => {
+//     console.log("google url :>> ", url);
+//     return (
+//       (url.origin === "https://content.googleapis.com" &&
+//         url.pathname.startsWith("/v4/rest")) ||
+//       (url.origin === "https://content-sheets.googleapis.com" &&
+//         url.pathname.startsWith("/v4/spreadsheets"))
+//     );
+//   },
+//   new StaleWhileRevalidate({
+//     cacheName: "google-sheets-cache",
+//     plugins: [
+//       new ExpirationPlugin({ maxEntries: 50 }),
+//     ], // Cache up to 50 requests for 24 hours
+//   })
+// );
 
 // Allow the web app to trigger skipWaiting via registration.waiting.postMessage({ type: 'SKIP_WAITING' })
 self.addEventListener("message", (event: ExtendableMessageEvent) => {
+  console.log('fetch event.request :>> ', event);
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
@@ -101,6 +87,7 @@ self.addEventListener("message", (event: ExtendableMessageEvent) => {
 
 // Handle POST fetch events
 self.addEventListener("fetch", (event: FetchEvent) => {
+  console.log('fetch event.request :>> ', event.request);
   if (event.request.method === "POST") {
     event.respondWith(staleWhileRevalidate(event));
   }
