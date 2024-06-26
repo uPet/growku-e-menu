@@ -6,6 +6,7 @@ import Toaster from "../atoms/Toaster.tsx/Toaster";
 
 type ConfigContextType = {
   configData: ConfigItem[];
+  isLoading?: boolean;
 };
 
 const ConfigContext = createContext<ConfigContextType>({ configData: [] });
@@ -19,12 +20,15 @@ type ConfigProviderProps = {
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const [configData, setConfigData] = useState<ConfigItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const cookieConfigData = Cookies.get("configData");
     if (cookieConfigData) {
       setConfigData(JSON.parse(cookieConfigData));
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
@@ -41,7 +45,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
         Cookies.set("configData", JSON.stringify(serverConfigData));
       } catch (error: any) {
         setError(
-          `Error fetching the configurations data. Please try again later, ${error?.message}`
+          `Error fetching or updating the configurations data. Please try again later.`
         );
       }
     };
@@ -50,7 +54,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <ConfigContext.Provider value={{ configData }}>
+    <ConfigContext.Provider value={{ configData, isLoading }}>
       {children}
       <Toaster
         message={error}

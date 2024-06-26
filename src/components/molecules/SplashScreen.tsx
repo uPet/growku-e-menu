@@ -5,7 +5,7 @@ import { useConfig } from "../organisms/ConfigContext";
 
 export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
-  const { configData } = useConfig();
+  const { configData, isLoading } = useConfig();
 
   const splashUrl = configData.find(
     (item) => item.option === "video-url"
@@ -27,7 +27,7 @@ export default function SplashScreen() {
     };
   }, [splashUrl]);
 
-  return isSplashVisible ? (
+  return isLoading && isSplashVisible ? (
     <div className="splash-screen">
       {splashUrl && (
         <video

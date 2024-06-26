@@ -7,6 +7,7 @@ import { Product } from "../../../model/product";
 import Products from "../../organisms/Products/Products";
 import Toaster from "../../atoms/Toaster.tsx/Toaster";
 import useAutoPlayVideo from "../../../hooks/useAutoPlayVideo";
+import { useConfig } from "../../organisms/ConfigContext";
 
 export type ProductCardType = Product & {
   productIndexOfCategory: number;
@@ -20,6 +21,11 @@ const HomePageView = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [allProducts, setAllProducts] = useState<ProductCardType[]>([]);
   const [error, setError] = useState<string>("");
+  const { configData } = useConfig();
+
+  const storeName = configData.find(
+    (item) => item.option === "store-name"
+  )?.value;
 
   const menuContentRef = useRef<HTMLDivElement>(null);
 
@@ -77,9 +83,7 @@ const HomePageView = () => {
   return (
     <>
       <div className="layout">
-        <h1 className="page-header">
-          {process.env.REACT_APP_SHOPIFY_STOREFRONT_NAME}
-        </h1>
+        {storeName && <h1 className="page-header">{storeName}</h1>}
         <Menu
           menuContentProps={{ ref: menuContentRef }}
           items={categories.map((category) => category.title)}
