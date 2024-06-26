@@ -7,30 +7,14 @@ export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const { configData } = useConfig();
 
-  console.log('configDataa :>> ', configData);
-
   const splashUrl = configData.find(
     (item) => item.option === "video-url"
   )?.value;
 
-
-  const hideSplashAfterDelay = (delay = 1000) => {
-    setTimeout(() => {
-      setIsSplashVisible(false);
-    }, delay);
-  };
-
   useEffect(() => {
-    if (!splashUrl) {
-      hideSplashAfterDelay();
-    }
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         setIsSplashVisible(true);
-        if (!splashUrl) {
-          hideSplashAfterDelay();
-        }
       } else {
         setIsSplashVisible(false);
       }
@@ -45,7 +29,7 @@ export default function SplashScreen() {
 
   return isSplashVisible ? (
     <div className="splash-screen">
-      {splashUrl ? (
+      {splashUrl && (
         <video
           crossOrigin="anonymous"
           muted
@@ -56,8 +40,6 @@ export default function SplashScreen() {
           <source src={splashUrl} type="video/mp4" />
           Loading view, Your browser does not support the video tag.
         </video>
-      ) : (
-        <>Loading ...</>
       )}
     </div>
   ) : null;

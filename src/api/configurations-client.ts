@@ -32,7 +32,6 @@ export default class ConfigurationsClient {
             resolve();
           })
           .catch((error: any) => {
-            console.error("Error initializing the Google API client", error);
             reject(error);
           });
       });
@@ -53,12 +52,10 @@ export default class ConfigurationsClient {
   }
 
   public async getConfigurationsData(): Promise<ConfigItem[]> {
-    await this.initializeClient(); // Ensure client is initialized before making API request
-
-    const firstSheetName = await this.getFirstSheetName();
-    const range = `${firstSheetName}!A1:B`; // Get the data of the columns A and B only
-
     try {
+      await this.initializeClient(); // Ensure client is initialized before making API request
+      const firstSheetName = await this.getFirstSheetName();
+      const range = `${firstSheetName}!A1:B`; // Get the data of the columns A and B only
       const response = (await gapi.client.sheets.spreadsheets.values.get({
         spreadsheetId: this.spreadsheetId,
         range: range,
@@ -73,13 +70,11 @@ export default class ConfigurationsClient {
           };
         });
       } else {
-        console.log("No data found.");
         return [];
       }
     } catch (error: any) {
-      console.error("Error reading Google Sheets data", error);
       throw new Error(
-        "Error reading Google Sheets data: " + error?.result?.error?.message
+        "Error reading Google Sheets data: " + error.message || ""
       );
     }
   }

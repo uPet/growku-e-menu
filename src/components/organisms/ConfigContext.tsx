@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import ConfigurationsClient from "../../api/configurations-client";
 import { ConfigItem } from "../../model/configurations";
+import Toaster from "../atoms/Toaster.tsx/Toaster";
 
 type ConfigContextType = {
   configData: ConfigItem[];
@@ -17,16 +19,30 @@ type ConfigProviderProps = {
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const [configData, setConfigData] = useState<ConfigItem[]>([]);
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    const cookieConfigData = Cookies.get("configData");
+    if (cookieConfigData) {
+      setConfigData(JSON.parse(cookieConfigData));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      const client = new ConfigurationsClient();
       try {
-        const data = await client.getConfigurationsData();
-        setConfigData(data);
+        const cookieConfigData = Cookies.get("configData");
+        const client = new ConfigurationsClient();
+        const serverConfigData = await client.getConfigurationsData();
+        if (!cookieConfigData) {
+          setConfigData(serverConfigData);
+        }
+        setError("");
+        Cookies.set("configData", JSON.stringify(serverConfigData));
       } catch (error: any) {
-        console.log("error :>> ", error);
-        // TODO: show error message
+        setError(
+          `Error fetching the configurations data. Please try again later, ${error?.message}`
+        );
       }
     };
 
@@ -36,6 +52,11 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   return (
     <ConfigContext.Provider value={{ configData }}>
       {children}
+      <Toaster
+        message={error}
+        isVisible={Boolean(error)}
+        onClose={() => setError("")}
+      />
     </ConfigContext.Provider>
   );
 };

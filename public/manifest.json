@@ -13,7 +13,7 @@
       "sizes": "64x64"
     }
   ],
-  "start_url": "/?video-url=https://cdn.shopify.com/videos/c/vp/176f7be3f0d74fd4bf4af1ce9d855bc8/176f7be3f0d74fd4bf4af1ce9d855bc8.HD-720p-1.6Mbps-28991975.mp4",
+  "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
