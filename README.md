@@ -3,7 +3,7 @@
 Growku E-menu is a progressive web application designed to facilitate the creation of electronic menus for internal use within restaurants.
 This app is optimized for compatibility with iPad (6th generation).
 
-The app is seamlessly integrated with a third-party API to retrieve product categories and information. Presently, it is linked with Shopify to access this data.
+The app is seamlessly integrated with a third-party API to retrieve product categories and information. Presently, it is linked with Wordpress to access this data.
 
 This project was initialized using [Create React App](https://github.com/facebook/create-react-app).
 
