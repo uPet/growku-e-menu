@@ -64,82 +64,74 @@ self.addEventListener("message", (event: ExtendableMessageEvent) => {
  * Here is the reference for the solution (we used the second solution): https://medium.com/@jono/cache-graphql-post-requests-with-service-worker-100a822a388a
  */
 
-// Handle POST fetch events
+/*
+ *
+ * Updated service worker logic to cache both GraphQL POST requests and REST API GET requests.
+ *
+ */
+
 self.addEventListener("fetch", (event: FetchEvent) => {
-  if (event.request.method === "POST") {
+  const { request } = event;
+
+  // Handle GraphQL POST requests
+  if (request.method === "POST" && isGraphQLRequest(request)) {
     event.respondWith(staleWhileRevalidate(event));
+    return;
+  }
+
+  // Handle REST API GET requests
+  if (request.method === "GET" && isRestApiRequest(request)) {
+    event.respondWith(cacheFirstStrategy(event));
+    return;
   }
 });
 
-// IndexedDB setup
-const store = new Store("GraphQL-Cache", "PostResponses");
+// Helper function to check if the request is a GraphQL request
+const isGraphQLRequest = (request: Request): boolean =>
+  request.url.includes("/graphql"); // Modify based on your GraphQL API endpoint
 
-async function getCache(request: Request): Promise<Response | null> {
+// Helper function to check if the request is a REST API request
+const isRestApiRequest = (request: Request): boolean =>
+  request.url.includes("/wp-json/wc/v3/"); // Modify based on your REST API structure
+
+// IndexedDB setup for GraphQL caching
+const store = new Store("Cache-Storage", "Responses");
+
+/**
+ * Cache-First Strategy for REST API (GET Requests)
+ * Returns the cached response if available, otherwise fetches from network and caches it.
+ */
+const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
+  const cache = await caches.open("rest-api-cache");
+  const cachedResponse = await cache.match(event.request);
+
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
   try {
-    const body = await request.clone().json();
-    const id = CryptoJS.MD5(body.query).toString();
-    const data = await get<{ response: Response; timestamp: number } | null>(
-      id,
-      store
-    );
-    if (!data) return null;
-
-    const cacheControl = request.headers.get("Cache-Control");
-    const maxAge = cacheControl ? parseInt(cacheControl.split("=")[1]) : 3600;
-    const isCachedExpired = Date.now() - data.timestamp > maxAge * 1000;
-    if (isCachedExpired) {
-      return null;
-    }
-
-    return new Response(JSON.stringify(data.response.body), data.response);
-  } catch (err) {
-    console.error(err);
-    return null;
+    const networkResponse = await fetch(event.request.clone());
+    await cache.put(event.request, networkResponse.clone());
+    return networkResponse;
+  } catch (error) {
+    console.error("cacheFirstStrategy error:", error);
+    return new Response(null, {
+      status: 503,
+      statusText: "Service Unavailable",
+    });
   }
-}
+};
 
-async function serializeResponse(response: Response): Promise<{
-  headers: HeadersInit;
-  status: number;
-  statusText: string;
-  body: any;
-}> {
-  const serializedHeaders: HeadersInit = {};
-  const headersArray = Array.from(response.headers.entries());
-  for (const entry of headersArray) {
-    serializedHeaders[entry[0]] = entry[1];
-  }
-  const serialized = {
-    headers: serializedHeaders,
-    status: response.status,
-    statusText: response.statusText,
-    body: await response.json(),
-  };
-  return serialized;
-}
-
-async function setCache(request: Request, response: Response): Promise<void> {
-  try {
-    const body = await request.clone().json();
-    const id = CryptoJS.MD5(body.query).toString();
-    const entry = {
-      query: body.query,
-      response: await serializeResponse(response),
-      timestamp: Date.now(),
-    };
-    await set(id, entry, store);
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
+/**
+ * Stale-While-Revalidate Strategy for GraphQL (POST Requests)
+ * Returns the cached response first if available and updates it in the background.
+ */
+const staleWhileRevalidate = async (event: FetchEvent): Promise<Response> => {
   let cachedResponse: Response | null = await getCache(event.request.clone());
 
   try {
-    // Serve the cached response immediately if available
     if (cachedResponse) {
-      // Start a fetch request in the background to get a fresh response
+      // Fetch in the background to update the cache
       fetch(event.request.clone())
         .then(async (fetchResponse) => {
           const responseClone = fetchResponse.clone();
@@ -154,7 +146,6 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
 
     // If no cached response is found, fetch from the network
     const fetchResponse = await fetch(event.request.clone());
-
     const responseClone = fetchResponse.clone();
     await setCache(event.request.clone(), responseClone);
 
@@ -168,6 +159,80 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
       new Response(null, { status: 503, statusText: "Service Unavailable" })
     );
   }
+};
+
+/**
+ * Retrieve GraphQL cached response from IndexedDB
+ */
+const getCache = async (request: Request): Promise<Response | null> => {
+  try {
+    const body = await request.clone().json();
+    const id = CryptoJS.MD5(body.query).toString();
+    const data = await get<{
+      response: CachedResponse;
+      timestamp: number;
+    } | null>(id, store);
+
+    if (!data) return null;
+
+    const isCachedExpired = Date.now() - data.timestamp > 3600 * 1000; // Cache expiration in seconds
+    if (isCachedExpired) return null;
+
+    return new Response(JSON.stringify(data.response.body), data.response);
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
+/**
+ * Store GraphQL response in IndexedDB
+ */
+const setCache = async (
+  request: Request,
+  response: Response
+): Promise<void> => {
+  try {
+    const body = await request.clone().json();
+    const id = CryptoJS.MD5(body.query).toString();
+    const entry = {
+      query: body.query,
+      response: await serializeResponse(response),
+      timestamp: Date.now(),
+    };
+    await set(id, entry, store);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+/**
+ * Serialize response for GraphQL caching
+ */
+const serializeResponse = async (
+  response: Response
+): Promise<CachedResponse> => {
+  const serializedHeaders: Record<string, string> = {};
+  for (const [key, value] of response.headers.entries()) {
+    serializedHeaders[key] = value;
+  }
+
+  return {
+    headers: serializedHeaders,
+    status: response.status,
+    statusText: response.statusText,
+    body: await response.json(),
+  };
+};
+
+/**
+ * Cached Response Interface
+ */
+interface CachedResponse {
+  headers: Record<string, string>;
+  status: number;
+  statusText: string;
+  body: any;
 }
 
 /*
