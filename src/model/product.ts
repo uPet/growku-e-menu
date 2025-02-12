@@ -1,4 +1,4 @@
-type Media = {
+export type Media = {
   id?: string;
   type: "image" | "video";
   url: string;
