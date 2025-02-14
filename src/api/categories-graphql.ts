@@ -6,7 +6,7 @@ export const getCategoriesData = async (
   language: LanguageType = "EN"
 ): Promise<Category[] | undefined> => {
   const response = await fetch(
-    `${process.env.REACT_APP_WORDPRESS_SITE_URL}/wp-json/wc/v3/categories-with-products-by-sales-channel?salesChannel=e-menu&storeName=Noches de Colombia`,
+    `${process.env.REACT_APP_WORDPRESS_SITE_URL}/wp-json/wc/v3/categories-with-products-by-sales-channel?salesChannel=e-menu&storeName=${process.env.REACT_APP_STORE_NAME}`,
     {
       headers: {
         "Content-Type": "application/json",
