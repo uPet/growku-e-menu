@@ -32,7 +32,6 @@ const Menu: React.FC<MenuProps> = ({
           >
             <button
               key={item}
-              // id={item?.toLocaleLowerCase()}
               className={`text-body menu-item ${selectedItem === item ? "active" : ""}`}
               onClick={(e) => {
                 e.preventDefault();
@@ -49,7 +48,7 @@ const Menu: React.FC<MenuProps> = ({
       </div>
       <div
         id={`menu-content-${selectedItem?.toLocaleLowerCase()}`}
-        className={`menu-content ${menuContentClassName}`}
+        className={`menu-content ${menuContentClassName || ""}`}
         {...restMenuContentProps}
       >
         {children}

@@ -8,6 +8,7 @@ import CardMedia from "../../atoms/CardMedia/CardMedia";
 import CardContent from "../../atoms/CardContent/CardContent";
 import ProductModal from "../ProductModal/ProductModal";
 import { ProductCardType } from "../../pages/Home/HomePageView";
+import { useConfig } from "../ConfigContext";
 
 type ProductCardProps = {
   shouldBeHidden: boolean;
@@ -31,12 +32,14 @@ function ProductCard({
 }: ProductCardProps) {
   const productModalRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { configData } = useConfig();
+  const HOME_CATEGORY_TITLE = configData.home_category_title;
 
   let variant: CardVariant = "default";
 
   if (
     product.productIndexOfCategory < NUMBER_OF_FEATURED_PRODUCTS ||
-    product.category === "Home"
+    product.category === HOME_CATEGORY_TITLE
   ) {
     variant = "featured";
   }

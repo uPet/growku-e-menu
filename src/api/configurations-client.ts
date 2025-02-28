@@ -7,7 +7,6 @@ export default class ConfigurationsClient {
     this.initialized = false;
   }
 
-  // If we have more settings, we can consume the wordpress API
   public async getConfigurationsData(): Promise<ConfigItem> {
     const response = await fetch(
       `${process.env.REACT_APP_WORDPRESS_SITE_URL}/wp-json/wc/v3/e-menu-config?storeName=${process.env.REACT_APP_STORE_NAME}`,
@@ -30,7 +29,6 @@ export default class ConfigurationsClient {
       throw new Error("No configuration data found");
     }
 
-    // map the returned data to the ConfigItem model
     return data;
   }
 }

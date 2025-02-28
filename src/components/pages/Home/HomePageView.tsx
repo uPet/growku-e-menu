@@ -16,7 +16,7 @@ export type ProductCardType = Product & {
   category: string;
 };
 
-const HOME_CATEGORY_TITLE = "Home";
+
 
 const HomePageView = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -24,6 +24,8 @@ const HomePageView = () => {
   const [allProducts, setAllProducts] = useState<ProductCardType[]>([]);
   const [error, setError] = useState<string>("");
   const { configData } = useConfig();
+
+  const HOME_CATEGORY_TITLE = configData.home_category_title;
 
   const menuContentRef = useRef<HTMLDivElement>(null);
 

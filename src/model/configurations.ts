@@ -15,10 +15,4 @@ export type Option =
   | "colors_modal_background"
   | "colors_modal_overlay";
 
-// export type ConfigItem = {
-//   option: Option;
-//   value: string;
-// };
-
-// ConfigItem is an object that his keys are the Option type and the value is a string
 export type ConfigItem = Record<Option, string>;

@@ -60,10 +60,6 @@
   min-width: 505px;
   overflow: scroll;
   flex: 1;
-  /* margin-top: 6px; */
-}
-
-@media screen and (min-width: 1024px) {
 }
 
 .menu-content::-webkit-scrollbar {
