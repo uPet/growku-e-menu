@@ -1,11 +1,6 @@
 .cards-wrapper {
   display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
-}
-
-@media screen and (min-width: 1024px) {
-  .cards-wrapper > .card:nth-child(4n + 1) {
-    margin-right: 16px;
-    margin-bottom: 16px;
-  }
+  gap: 25px;
 }

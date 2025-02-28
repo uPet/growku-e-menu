@@ -1,7 +1,6 @@
 .card-action {
   overflow: hidden;
   display: flex;
-  justify-content: space-between;
   padding: 0;
   border: none;
   text-align: left;
@@ -9,4 +8,6 @@
   align-items: center;
   cursor: pointer;
   width: 100%;
+  height: 100%;
+  gap: 25px;
 }

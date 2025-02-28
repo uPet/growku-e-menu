@@ -24,7 +24,7 @@ const Toaster: React.FC<ToasterProps> = ({ message, isVisible, onClose }) => {
       <div className="icon">
         <ErrorIcon />
       </div>
-      <p>{message}</p>
+      <p className="text-body">{message}</p>
     </div>
   );
 };

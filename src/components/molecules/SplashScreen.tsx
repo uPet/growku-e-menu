@@ -7,9 +7,8 @@ export default function SplashScreen() {
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const { configData, isLoading } = useConfig();
 
-  const splashUrl = configData.find(
-    (item) => item.option === "video-url"
-  )?.value;
+  const splashVideoUrl = configData.splash_video_url;
+  const splashImage = configData.splash_image_url;
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -25,11 +24,11 @@ export default function SplashScreen() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [splashUrl]);
+  }, [splashVideoUrl]);
 
   return isLoading && isSplashVisible ? (
     <div className="splash-screen">
-      {splashUrl && (
+      {splashVideoUrl && (
         <video
           crossOrigin="anonymous"
           muted
@@ -37,9 +36,17 @@ export default function SplashScreen() {
           className="splash-video ignore-autoplay"
           onEnded={() => setIsSplashVisible(false)}
         >
-          <source src={splashUrl} type="video/mp4" />
+          <source src={splashVideoUrl} type="video/mp4" />
           Loading view, Your browser does not support the video tag.
         </video>
+      )}
+      {!splashVideoUrl && splashImage && (
+        <img
+          src={splashImage}
+          alt="Splash"
+          className="splash-image"
+          onLoad={() => setIsSplashVisible(false)}
+        />
       )}
     </div>
   ) : null;

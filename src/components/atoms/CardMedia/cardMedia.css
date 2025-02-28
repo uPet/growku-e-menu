@@ -1,29 +1,35 @@
 .card-media {
-  min-width: 110px;
-  max-width: 110px;
-  height: 110px;
-  border-radius: var(--product-card-corner-radius);
-  padding: 16px;
+  min-width: 240px;
+  width: 240px;
+  height: 100%;
+  border-radius: 5px;
+  padding: 0;
 }
 
-@media screen and (min-width: 1024px) {
-  .card-media {
-    height: 108px;
-  }
+.card-media.card-media--featured {
+  position: absolute;
+  width: 100%;
+  max-width: unset;
+  min-width: unset;
+  height: 100%;
 }
 
 .card-media img {
-    object-fit: cover;
-    object-position: 50% 50%;
-    background-color: rgb(var(--color-background));
-    border-radius: var(--product-card-corner-radius);
-    width: 100%;
-    height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
 }
 
 .card-media .placeholder {
   width: 100%;
   height: 100%;
-  background-color: rgba(var(--color-foreground), 0.05);
-  border-radius: var(--product-card-corner-radius);
+  background: linear-gradient(
+      180.5deg,
+      rgba(0, 0, 0, 0) 4.14%,
+      rgba(0, 0, 0, 0.6) 84.51%
+    ),
+    var(--growku-brand-color);
+  border-radius: 5px;
 }
