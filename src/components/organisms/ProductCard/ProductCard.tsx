@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from "react";
 
 import "./productCard.css";
 
-import Card from "../../atoms/Card/Card";
+import Card, { CardVariant } from "../../atoms/Card/Card";
 import CardActionArea from "../../atoms/CardActionArea/CardActionArea";
 import CardMedia from "../../atoms/CardMedia/CardMedia";
 import CardContent from "../../atoms/CardContent/CardContent";
@@ -18,6 +18,8 @@ type ProductCardProps = {
   setShownProductIndex: React.Dispatch<React.SetStateAction<number | null>>;
 } & React.ImgHTMLAttributes<HTMLDivElement>;
 
+const NUMBER_OF_FEATURED_PRODUCTS = 4;
+
 function ProductCard({
   shouldBeHidden, // TODO: update the name
   shouldBeHide, // TODO: update the name
@@ -29,6 +31,15 @@ function ProductCard({
 }: ProductCardProps) {
   const productModalRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  let variant: CardVariant = "default";
+
+  if (
+    product.productIndexOfCategory < NUMBER_OF_FEATURED_PRODUCTS ||
+    product.category === "Home"
+  ) {
+    variant = "featured";
+  }
 
   // Show or hide the modal when the user swipe left or right
   useEffect(() => {
@@ -78,13 +89,15 @@ function ProductCard({
   }, [shownProductIndex, productIndex, product.isLastProductOfCategory]);
 
   const openModal = () => {
-    setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
-    setShownProductIndex(productIndex);
-    if (!productModalRef.current || productIndex === null) return;
+    // TODO: This feature is not released yet, once it is released, uncomment the code below
+    return;
+    // setIsModalOpen(true);
+    // document.body.style.overflow = "hidden";
+    // setShownProductIndex(productIndex);
+    // if (!productModalRef.current || productIndex === null) return;
 
-    productModalRef.current.classList.remove("product-modal-close");
-    productModalRef.current.classList.add("product-modal-open");
+    // productModalRef.current.classList.remove("product-modal-close");
+    // productModalRef.current.classList.add("product-modal-open");
   };
 
   const closeModal = () => {
@@ -98,21 +111,25 @@ function ProductCard({
 
   return (
     <>
-      <Card {...cardProps}>
+      <Card variant={variant} {...cardProps}>
         <CardActionArea onClick={openModal}>
-          <CardContent>
-            <h3 className="h5">{product.title}</h3>
-            <p>{product.description}</p>
+          <CardMedia
+            variant={variant}
+            src={product?.featuredImage.url}
+            alt={product.title}
+          />
+          <CardContent variant={variant}>
+            <h2>{product.title}</h2>
+            {variant === "default" && <h3>{product.description}</h3>}
             <p>
               {product.compareAtPrice && (
-                <span className="compare-at-price">
+                <span className="h2 compare-text">
                   {product.compareAtPrice}
                 </span>
               )}
-              <span>{product.price}</span>
+              <span className="h2">${product.price}</span>
             </p>
           </CardContent>
-          <CardMedia src={product?.featuredImage.url} alt={product.title} />
         </CardActionArea>
       </Card>
       <ProductModal
@@ -142,7 +159,7 @@ function ProductCard({
   );
 }
 
-// TODO: Refactor this function to be retable and clear
+// TODO: Refactor this function to be readable and clear
 const areEqual = (prevProps: ProductCardProps, nextProps: ProductCardProps) => {
   const equal =
     prevProps.product === nextProps.product &&

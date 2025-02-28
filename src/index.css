@@ -1,13 +1,88 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* TODO: If we support multiple fonts, we could import them dynamically in another way */
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./fonts/Poppins-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-body);
+}
+
+/*
+We have two breakpoints in our design: 767px and 1024px.
+By default the styles are for tablets and larger screens.
+*/
+
+body {
+  background-image: var(--growu-body-background-image-url);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.text-body {
+  font-family: var(--font-family-body);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--growku-text-default);
+  word-break: break-word;
+}
+
+h2,
+.h2 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 25px;
+  word-break: break-word;
+  color: var(--growku-text-heading);
+}
+
+h3,
+.h3 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  line-height: 25px;
+  word-break: break-word;
+  color: var(--growku-text-heading);
+}
+
+.hidden {
+  display: none;
 }

@@ -16,16 +16,14 @@ export type ProductCardType = Product & {
   category: string;
 };
 
+const HOME_CATEGORY_TITLE = "Home";
+
 const HomePageView = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [allProducts, setAllProducts] = useState<ProductCardType[]>([]);
   const [error, setError] = useState<string>("");
   const { configData } = useConfig();
-
-  const storeName = configData.find(
-    (item) => item.option === "store-name"
-  )?.value;
 
   const menuContentRef = useRef<HTMLDivElement>(null);
 
@@ -80,17 +78,37 @@ const HomePageView = () => {
     }
   };
 
+  const headerOnClick = () => {
+    if (selectedCategory === HOME_CATEGORY_TITLE) return;
+    const homeCategory = categories.find(
+      (category) => category.title === HOME_CATEGORY_TITLE
+    );
+
+    if (homeCategory) {
+      setSelectedCategory(HOME_CATEGORY_TITLE);
+      return;
+    }
+  };
+
+  const storeLogo = configData.store_logo_url;
+
   return (
     <>
       <div className="layout">
-        {storeName && <h1 className="page-header">{storeName}</h1>}
         <Menu
           menuContentProps={{ ref: menuContentRef }}
           items={categories.map((category) => category.title)}
           selectedItem={selectedCategory}
           onClick={onCategoryChange}
+          menuHeader={
+            <img
+              onClick={headerOnClick}
+              className="logo"
+              src={storeLogo}
+              alt="logo"
+            />
+          }
         >
-          <h2>{selectedCategory}</h2>
           <Products items={allProducts} selectedCategory={selectedCategory} />
         </Menu>
       </div>

@@ -8,6 +8,7 @@ interface MenuProps {
   selectedItem: string;
   onClick?: (item: string) => void;
   children?: React.ReactNode;
+  menuHeader?: React.ReactNode;
 }
 
 const Menu: React.FC<MenuProps> = ({
@@ -19,16 +20,20 @@ const Menu: React.FC<MenuProps> = ({
   selectedItem,
   onClick,
   children,
+  menuHeader,
 }) => {
-
   return (
     <div className="menu">
       <div className="menu-list">
+        {menuHeader && <div className="menu-header">{menuHeader}</div>}
         {items.map((item) => (
-          <div key={item} className="menu-item-wrapper">
+          <div key={item} className="menu-item-wrapper"
+          id={`menu-item-wrapper-${item?.toLocaleLowerCase()}`}
+          >
             <button
               key={item}
-              className={`menu-item ${selectedItem === item ? "active" : ""}`}
+              // id={item?.toLocaleLowerCase()}
+              className={`text-body menu-item ${selectedItem === item ? "active" : ""}`}
               onClick={(e) => {
                 e.preventDefault();
                 onClick?.(item);
@@ -43,6 +48,7 @@ const Menu: React.FC<MenuProps> = ({
         ))}
       </div>
       <div
+        id={`menu-content-${selectedItem?.toLocaleLowerCase()}`}
         className={`menu-content ${menuContentClassName}`}
         {...restMenuContentProps}
       >

@@ -31,10 +31,10 @@ export const getCategoriesData = async (
       id: product.id,
       title: product.name,
       description: product.description,
-      price: `${product.price} USD`,
+      price: product.price,
       permalink: product.permalink,
       featuredImage: {
-        url: product.featured_image || "",
+        url: product.featured_image || product.media[0]?.url,
         alt: product.name,
       },
       media: [

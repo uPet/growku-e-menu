@@ -3,66 +3,67 @@
 }
 
 .menu-list {
-  width: 200px;
-  padding-top: 20px;
+  width: 243px;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: center;
+  height: 120px;
+  margin-bottom: 25px;
+}
+
+.menu-header .logo {
+  width: 162px;
+  cursor: pointer;
 }
 
 .menu-item-wrapper {
   position: relative;
-  margin-bottom: 12px;
+  height: 50px;
 }
 
 .menu-item {
-  padding: 6px 12px;
+  padding: 0;
+  padding-left: 52px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 0;
   text-transform: none;
-  color: rgba(var(--color-foreground), 0.75);
   margin: 0px;
   display: block;
   border: none;
-  background: transparent;
+  background: none;
+  height: 100%;
   width: 100%;
   text-align: left;
 }
 
+#menu-item-wrapper-home {
+  display: none;
+}
+
 .menu-item.active {
-  font-weight: 700;
-  letter-spacing: calc(1 + 0.4 / var(--font-body-scale));
-  color: rgb(var(--color-foreground));
+  font-weight: bold;
 }
 
 .menu-item-highlight {
   position: absolute;
-  background-color: rgb(var(--color-foreground));
-  border-radius: 0px 8px 8px 0px;
+  background-color: var(--growku-brand-color);
+  border-radius: 0px 10px 10px 0px;
   left: 0;
   bottom: 0;
   height: 100%;
-  width: 0.25rem;
+  width: 22px;
 }
 
 .menu-content {
-  height: calc(100vh - 80px);
+  height: calc(100vh);
+  min-width: 505px;
   overflow: scroll;
   flex: 1;
-  /* padding: 0 20px; */
-}
-
-.menu-content h2 {
-  margin-bottom: 0;
-  padding-left: 16px;
+  /* margin-top: 6px; */
 }
 
 @media screen and (min-width: 1024px) {
-  .menu-content h2 {
-    margin-bottom: 20px;
-    padding-left: 0;
-  }
-  
 }
 
 .menu-content::-webkit-scrollbar {

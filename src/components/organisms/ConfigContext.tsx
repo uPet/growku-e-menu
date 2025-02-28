@@ -5,11 +5,30 @@ import { ConfigItem } from "../../model/configurations";
 import Toaster from "../atoms/Toaster.tsx/Toaster";
 
 type ConfigContextType = {
-  configData: ConfigItem[];
+  configData: ConfigItem;
   isLoading?: boolean;
 };
 
-const ConfigContext = createContext<ConfigContextType>({ configData: [] });
+const defaultConfigData: ConfigItem = {
+  domain_url: "",
+  background_image_url: "",
+  store_logo_url: "",
+  splash_video_url: "",
+  splash_image_url: "",
+  home_category_title: "",
+  brand_color: "",
+  colors_text_default: "",
+  colors_text_heading: "",
+  colors_text_critical: "",
+  colors_background_default: "",
+  colors_background_critical: "",
+  colors_modal_background: "",
+  colors_modal_overlay: "",
+};
+
+const ConfigContext = createContext<ConfigContextType>({
+  configData: defaultConfigData,
+});
 
 // Custom hook to use ConfigContext
 export const useConfig = () => useContext(ConfigContext);
@@ -19,7 +38,7 @@ type ConfigProviderProps = {
 };
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
-  const [configData, setConfigData] = useState<ConfigItem[]>([]);
+  const [configData, setConfigData] = useState<ConfigItem>(defaultConfigData);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
