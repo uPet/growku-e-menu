@@ -40,7 +40,7 @@
   max-width: 560px;
   max-height: calc(100vh - 16px * 2);
   width: calc(100vw - 16px * 2);
-  height: 100%;
+  height: auto;
   position: relative;
   display: flex;
   flex-direction: column;
