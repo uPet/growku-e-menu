@@ -2,6 +2,7 @@
 export type Option =
   | "domain_url"
   | "background_image_url"
+  | "background_color"
   | "store_logo_url"
   | "splash_video_url"
   | "splash_image_url"
