@@ -92,15 +92,13 @@ function ProductCard({
   }, [shownProductIndex, productIndex, product.isLastProductOfCategory]);
 
   const openModal = () => {
-    // TODO: This feature is not released yet, once it is released, uncomment the code below
-    return;
-    // setIsModalOpen(true);
-    // document.body.style.overflow = "hidden";
-    // setShownProductIndex(productIndex);
-    // if (!productModalRef.current || productIndex === null) return;
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+    setShownProductIndex(productIndex);
+    if (!productModalRef.current || productIndex === null) return;
 
-    // productModalRef.current.classList.remove("product-modal-close");
-    // productModalRef.current.classList.add("product-modal-open");
+    productModalRef.current.classList.remove("product-modal-close");
+    productModalRef.current.classList.add("product-modal-open");
   };
 
   const closeModal = () => {
@@ -144,19 +142,19 @@ function ProductCard({
         product={product}
         productModalRef={productModalRef}
         key={product.title}
-        onSwipeLeft={() => {
-          if (productIndex === null) return;
+        // onSwipeLeft={() => {
+        //   if (productIndex === null) return;
 
-          setShownProductIndex(
-            product.isLastProductOfCategory ? productIndex : productIndex + 1
-          );
-        }}
-        onSwipeRight={() => {
-          if (productIndex === null) return;
-          setShownProductIndex(
-            product.isFirstProductOfCategory ? null : productIndex - 1
-          );
-        }}
+        //   setShownProductIndex(
+        //     product.isLastProductOfCategory ? productIndex : productIndex + 1
+        //   );
+        // }}
+        // onSwipeRight={() => {
+        //   if (productIndex === null) return;
+        //   setShownProductIndex(
+        //     product.isFirstProductOfCategory ? null : productIndex - 1
+        //   );
+        // }}
       />
     </>
   );
