@@ -58,6 +58,15 @@ body {
   word-break: break-word;
 }
 
+.text-subtitle {
+  font-family: var(--font-family-body);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--growku-text-default);
+  word-break: break-word;
+}
+
 h2,
 .h2 {
   margin: 0;

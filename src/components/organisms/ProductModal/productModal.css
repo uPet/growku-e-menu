@@ -35,20 +35,13 @@
 
 .modal {
   background-color: var(--growku-modal-background-color);
-  /* padding: 20px; */
-  /* border-radius: 8px; */
   border-radius: 12px;
-  /* max-width: 100%; */
-  box-shadow: 0px 6px 20px 0px #19191933;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   max-width: 560px;
-  /* max-height: 100%; */
-  max-height: calc(100vh - 16 * 2);
-  /* width: 100%; */
-  width: calc(100vw - 16 * 2);
+  max-height: calc(100vh - 16px * 2);
+  width: calc(100vw - 16px * 2);
   height: 100%;
-  /* overflow: auto; */
   position: relative;
-
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -61,6 +54,7 @@
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
+  padding-top: 16px;
 }
 
 .media-container .media-item {
@@ -81,13 +75,6 @@
 }
 
 .modal .close-button {
-  /* border: none;
-  background-color: transparent;
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  padding: 5px;
-  cursor: pointer; */
   border: none;
   background: transparent;
   padding: 0;
@@ -99,8 +86,37 @@
   cursor: pointer;
 }
 
+.modal .modal-body {
+  flex-grow: 1;
+  overflow: auto;
+  z-index: 0;
+  border-radius: 0;
+  padding: 16px;
+}
+
+.modal .modal-body .title {
+  margin-bottom: 8px;
+}
+
+.modal .modal-body .description {
+  margin: 0;
+}
+
 .modal .card-content .compare-at-price {
   margin-right: 0.25rem;
   text-decoration: line-through;
   color: var(--growku-text-default);
+}
+
+.modal .modal-footer {
+  z-index: 1;
+  transition: all 0.3s ease-in-out 0s;
+  background: transparent;
+  padding: 16px;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  justify-content: flex-end;
 }

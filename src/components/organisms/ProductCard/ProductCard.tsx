@@ -142,6 +142,7 @@ function ProductCard({
         product={product}
         productModalRef={productModalRef}
         key={product.title}
+        // We are disabling the swipe feature for now, if we need it, jsut uncomment the lines below
         // onSwipeLeft={() => {
         //   if (productIndex === null) return;
 
