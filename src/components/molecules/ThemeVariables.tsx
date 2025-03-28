@@ -16,6 +16,11 @@ export default function ThemeVariables() {
       `url("${configData["background_image_url"]}")`
     );
 
+    root.style.setProperty(
+      "--growku-background-color",
+      configData["background_color"]
+    );
+
     // Colors Variables
     root.style.setProperty("--growku-brand-color", configData["brand_color"]);
     root.style.setProperty(
