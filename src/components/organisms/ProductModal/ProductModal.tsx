@@ -81,42 +81,46 @@ const ProductModal = ({
   return (
     <div className="modal-overlay" ref={productModalRef} onClick={onCloseModal}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <button className="close-button" onClick={onCloseModal}>
-          <CloseIcon />
-        </button>
-        <h3 className="h5">{product.title}</h3>
-        <p>{product.description}</p>
-        <p>
-          {product.compareAtPrice && (
-            <span className="compare-at-price">{product.compareAtPrice}</span>
-          )}
-          <span>{product.price}</span>
-        </p>
-        <div className="media-container">
-          {product.media.map((item, index) => (
-            <div className="media-item" key={index}>
-              {item.type === "image" ? (
-                <img
-                  src={item.url}
-                  alt={`${product.title}-${index}`}
-                  className="modal-media"
-                  style={{ maxWidth: item.width, maxHeight: item.height }}
-                />
-              ) : (
-                <video
-                  ref={(el) => (videoRefs.current[index] = el)}
-                  crossOrigin="anonymous"
-                  controls
-                  muted
-                  className="modal-media"
-                  style={{ maxWidth: item.width, maxHeight: item.height }}
-                >
-                  <source src={item.url} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              )}
-            </div>
-          ))}
+        <div className="modal-header">
+          <button className="close-button" onClick={onCloseModal}>
+            <CloseIcon />
+          </button>
+        </div>
+        <div className="modal-body">
+          <h3 className="h5">{product.title}</h3>
+          <p className="text-body">{product.description}</p>
+          <p>
+            {product.compareAtPrice && (
+              <span className="compare-at-price">{product.compareAtPrice}</span>
+            )}
+            <span>{product.price}</span>
+          </p>
+          <div className="media-container">
+            {product.media.map((item, index) => (
+              <div className="media-item" key={index}>
+                {item.type === "image" ? (
+                  <img
+                    src={item.url}
+                    alt={`${product.title}-${index}`}
+                    className="modal-media"
+                    style={{ maxWidth: item.width, maxHeight: item.height }}
+                  />
+                ) : (
+                  <video
+                    ref={(el) => (videoRefs.current[index] = el)}
+                    crossOrigin="anonymous"
+                    controls
+                    muted
+                    className="modal-media"
+                    style={{ maxWidth: item.width, maxHeight: item.height }}
+                  >
+                    <source src={item.url} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

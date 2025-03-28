@@ -18,7 +18,7 @@ export default function ThemeVariables() {
 
     root.style.setProperty(
       "--growku-background-color",
-      configData["background_color"]
+      configData["background_color"] || "black"
     );
 
     // Colors Variables
