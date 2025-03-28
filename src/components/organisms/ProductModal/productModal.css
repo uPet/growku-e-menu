@@ -105,7 +105,6 @@
 .modal .card-content .compare-at-price {
   margin-right: 0.25rem;
   text-decoration: line-through;
-  color: var(--growku-text-default);
 }
 
 .modal .modal-footer {
