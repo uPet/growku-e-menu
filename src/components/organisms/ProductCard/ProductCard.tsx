@@ -128,7 +128,7 @@ function ProductCard({
                   {product.compareAtPrice}
                 </span>
               )}
-              <span className="h2">${product.price}</span>
+              <span className="h2">${product.cashPrice || product.price}</span>
             </p>
           </CardContent>
         </CardActionArea>
