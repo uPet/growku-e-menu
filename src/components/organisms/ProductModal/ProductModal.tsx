@@ -87,10 +87,17 @@ const ProductModal = ({
           </button>
         </div>
         <div className="modal-body">
-          <h3 className="h2 title">{product.title} • {product.compareAtPrice && (
-              <span className="ml-2px compare-at-price">${product.compareAtPrice}</span>
+          <h3 className="h2 title">
+            {product.title} •{" "}
+            {product.compareAtPrice && (
+              <span className="ml-2px compare-at-price">
+                ${product.compareAtPrice}
+              </span>
             )}
-            <span className="ml-4px" >${product.price}</span></h3>
+            <span className="ml-4px">
+              ${product.cashPrice || product.price}
+            </span>
+          </h3>
           <p className="text-subtitle description">{product.description}</p>
           <div className="media-container">
             {product.media.map((item, index) => (

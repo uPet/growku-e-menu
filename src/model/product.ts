@@ -14,6 +14,7 @@ export type Product = {
   descriptionHtml: string;
   handle: string;
   price: string;
+  cashPrice: string;
   compareAtPrice: string;
   featuredImage: Media;
   media: Media[];

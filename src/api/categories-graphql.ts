@@ -32,6 +32,7 @@ export const getCategoriesData = async (
       title: product.name,
       description: product.description,
       price: product.price,
+      cashPrice: product.cash_price,
       permalink: product.permalink,
       featuredImage: {
         url: product.featured_image || product.media[0]?.url,
