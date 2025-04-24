@@ -26,6 +26,17 @@ export default function SplashScreen() {
     };
   }, [splashVideoUrl]);
 
+  // hide the splash screen video after 10 seconds if isSplashVisible is true
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isSplashVisible) {
+      timer = setTimeout(() => {
+        setIsSplashVisible(false);
+      }, 10000); // 10 seconds
+    }
+    return () => clearTimeout(timer);
+  }, [isSplashVisible]);
+
   return isLoading && isSplashVisible ? (
     <div className="splash-screen">
       {splashVideoUrl && (
@@ -34,6 +45,7 @@ export default function SplashScreen() {
           muted
           autoPlay
           className="splash-video ignore-autoplay"
+
           onEnded={() => setIsSplashVisible(false)}
         >
           <source src={splashVideoUrl} type="video/mp4" />
