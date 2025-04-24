@@ -27,33 +27,22 @@ const Products = ({
   );
   const [renderedItems, setRenderedItems] = useState<ProductCardType[]>([]);
 
+  /**
+   * Incrementally renders items in small batches to prevent UI blocking/crashing
+   * when displaying large lists like full product catalogs.
+   */
   useEffect(() => {
     let i = 0;
-    let batchCount = 0;
-    const startTime = performance.now();
 
     setRenderedItems([]);
-    console.log(
-      `[Products] Start progressive rendering of ${items.length} products...`
-    );
 
     function renderBatch() {
       const nextBatch = items.slice(i, i + BATCH_SIZE);
       setRenderedItems((prev) => [...prev, ...nextBatch]);
       i += BATCH_SIZE;
-      batchCount++;
-
-      console.log(
-        `[Products] Rendered batch #${batchCount}: ${nextBatch.length} items (total rendered: ${i})`
-      );
 
       if (i < items.length) {
         scheduleIdle(renderBatch);
-      } else {
-        const totalTime = (performance.now() - startTime).toFixed(2);
-        console.log(
-          `[Products] ✅ Finished rendering all products in ${batchCount} batches. Total time: ${totalTime}ms`
-        );
       }
     }
 

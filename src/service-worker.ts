@@ -36,8 +36,8 @@ registerRoute(
     cacheName: "all-images",
     plugins: [
       new ExpirationPlugin({
-        maxEntries: 100,             // 🔻 Lower it from 500 to 100
-        purgeOnQuotaError: true,     // 🔥 This is crucial!
+        maxEntries: 500,             // Cache up to 500 images, assume we have max 100 products and each one has 5 images.
+        purgeOnQuotaError: true,
       }),
     ],
   })
@@ -48,7 +48,7 @@ registerRoute(
   ({ request }: { request: Request }) => request.destination === "video",
   new StaleWhileRevalidate({
     cacheName: "videos",
-    plugins: [new ExpirationPlugin({ maxEntries: 100 })], // Probably we need to adjust this number in the future.
+    plugins: [new ExpirationPlugin({ maxEntries: 10 })], // Probably we need to adjust this number in the future.
   })
 );
 
@@ -234,9 +234,6 @@ const getRestApiCache = async (url: string): Promise<Response | null> => {
   try {
     const data = await get<CachedResponse & { timestamp: number }>(url, store);
     if (!data) return null;
-
-    const isExpired = Date.now() - data.timestamp > 3600 * 1000; // 1 hour
-    if (isExpired) return null;
 
     return new Response(JSON.stringify(data.body), {
       status: data.status,
