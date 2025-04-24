@@ -86,6 +86,16 @@ self.addEventListener("fetch", (event: FetchEvent) => {
   }
 });
 
+const limitCacheSize = async (cacheName: string, maxItems: number) => {
+  const cache = await caches.open(cacheName);
+  const keys = [...(await cache.keys())]; // copy into a mutable array
+
+  while (keys.length > maxItems) {
+    await cache.delete(keys[0]); // delete oldest
+    keys.shift(); // now safe to mutate
+  }
+};
+
 // Helper function to check if the request is a GraphQL request
 const isGraphQLRequest = (request: Request): boolean =>
   request.url.includes("/graphql"); // Modify based on your GraphQL API endpoint
@@ -112,6 +122,10 @@ const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
   try {
     const networkResponse = await fetch(event.request.clone());
     await cache.put(event.request, networkResponse.clone());
+
+    // ✅ Add this line right after cache.put
+    await limitCacheSize("rest-api-cache", 100); // Limit to 100 API responses
+
     return networkResponse;
   } catch (error) {
     console.error("cacheFirstStrategy error:", error);
