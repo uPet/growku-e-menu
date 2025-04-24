@@ -29,21 +29,31 @@ registerRoute(({ request, url }: { request: Request; url: URL }) => {
   return true;
 }, createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html"));
 
-// Cache all images on the site
+// Cache all images (100 only) on the site
 registerRoute(
-  ({ request }: { request: Request }) => request.destination === "image",
+  ({ request }) => request.destination === "image",
   new StaleWhileRevalidate({
     cacheName: "all-images",
-    plugins: [new ExpirationPlugin({ maxEntries: 500 })], // Cache up to 500 images, assume we have max 100 products and each one has 5 images.
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,             // 🔻 Lower it from 500 to 100
+        purgeOnQuotaError: true,     // 🔥 This is crucial!
+      }),
+    ],
   })
 );
 
 // Cache all videos on the site
 registerRoute(
-  ({ request }: { request: Request }) => request.destination === "video",
+  ({ request }) => request.destination === "video",
   new StaleWhileRevalidate({
     cacheName: "videos",
-    plugins: [new ExpirationPlugin({ maxEntries: 100 })], // Probably we need to adjust this number in the future.
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 30,              // 🔻 Lower this too
+        purgeOnQuotaError: true,     // 🔥 Very important!
+      }),
+    ],
   })
 );
 
