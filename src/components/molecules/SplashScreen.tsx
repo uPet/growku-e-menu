@@ -44,6 +44,7 @@ export default function SplashScreen() {
           crossOrigin="anonymous"
           muted
           autoPlay
+          playsInline
           className="splash-video ignore-autoplay"
 
           onEnded={() => setIsSplashVisible(false)}
