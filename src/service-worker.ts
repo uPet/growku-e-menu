@@ -30,18 +30,18 @@ registerRoute(({ request, url }: { request: Request; url: URL }) => {
 }, createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html"));
 
 // Cache all images (100 only) on the site
-registerRoute(
-  ({ request }) => request.destination === "image",
-  new StaleWhileRevalidate({
-    cacheName: "all-images",
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 100,             // 🔻 Lower it from 500 to 100
-        purgeOnQuotaError: true,     // 🔥 This is crucial!
-      }),
-    ],
-  })
-);
+// registerRoute(
+//   ({ request }) => request.destination === "image",
+//   new StaleWhileRevalidate({
+//     cacheName: "all-images",
+//     plugins: [
+//       new ExpirationPlugin({
+//         maxEntries: 100,             // 🔻 Lower it from 500 to 100
+//         purgeOnQuotaError: true,     // 🔥 This is crucial!
+//       }),
+//     ],
+//   })
+// );
 
 // Cache all videos on the site
 registerRoute(
