@@ -86,16 +86,6 @@ self.addEventListener("fetch", (event: FetchEvent) => {
   }
 });
 
-const limitCacheSize = async (cacheName: string, maxItems: number) => {
-  const cache = await caches.open(cacheName);
-  const keys = [...(await cache.keys())]; // copy into a mutable array
-
-  while (keys.length > maxItems) {
-    await cache.delete(keys[0]); // delete oldest
-    keys.shift(); // now safe to mutate
-  }
-};
-
 // Helper function to check if the request is a GraphQL request
 const isGraphQLRequest = (request: Request): boolean =>
   request.url.includes("/graphql"); // Modify based on your GraphQL API endpoint
@@ -112,20 +102,13 @@ const store = new Store("Cache-Storage", "Responses");
  * Returns the cached response if available, otherwise fetches from network and caches it.
  */
 const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
-  const cache = await caches.open("rest-api-cache");
-  const cachedResponse = await cache.match(event.request);
-
-  if (cachedResponse) {
-    return cachedResponse;
-  }
+  const url = event.request.url;
+  const cached = await getRestApiCache(url);
+  if (cached) return cached;
 
   try {
     const networkResponse = await fetch(event.request.clone());
-    await cache.put(event.request, networkResponse.clone());
-
-    // ✅ Add this line right after cache.put
-    await limitCacheSize("rest-api-cache", 100); // Limit to 100 API responses
-
+    await setRestApiCache(url, networkResponse.clone());
     return networkResponse;
   } catch (error) {
     console.error("cacheFirstStrategy error:", error);
@@ -237,6 +220,55 @@ const serializeResponse = async (
     statusText: response.statusText,
     body: await response.json(),
   };
+};
+
+/**
+ * Get REST API GET response from IndexedDB
+ */
+const getRestApiCache = async (url: string): Promise<Response | null> => {
+  try {
+    const data = await get<CachedResponse & { timestamp: number }>(url, store);
+    if (!data) return null;
+
+    const isExpired = Date.now() - data.timestamp > 3600 * 1000; // 1 hour
+    if (isExpired) return null;
+
+    return new Response(JSON.stringify(data.body), {
+      status: data.status,
+      statusText: data.statusText,
+      headers: new Headers(data.headers),
+    });
+  } catch (err) {
+    console.error("getRestApiCache error:", err);
+    return null;
+  }
+};
+
+/**
+ * Save REST API GET response in IndexedDB
+ */
+const setRestApiCache = async (
+  url: string,
+  response: Response
+): Promise<void> => {
+  try {
+    const headers: Record<string, string> = {};
+    response.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+
+    const entry: CachedResponse & { timestamp: number } = {
+      headers,
+      status: response.status,
+      statusText: response.statusText,
+      body: await response.clone().json(),
+      timestamp: Date.now(),
+    };
+
+    await set(url, entry, store);
+  } catch (err) {
+    console.error("setRestApiCache error:", err);
+  }
 };
 
 /**
