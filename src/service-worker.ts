@@ -1,13 +1,14 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
 
-import CryptoJS from "crypto-js";
-import { Store, get, set } from "idb-keyval";
+// import CryptoJS from "crypto-js";
+// import { Store, get, set } from "idb-keyval";
+import { Store } from "idb-keyval";
 import { clientsClaim } from "workbox-core";
-import { ExpirationPlugin } from "workbox-expiration";
+// import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+// import { StaleWhileRevalidate } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -43,19 +44,19 @@ registerRoute(({ request, url }: { request: Request; url: URL }) => {
 //   })
 // );
 
-// Cache all videos on the site
-registerRoute(
-  ({ request }) => request.destination === "video",
-  new StaleWhileRevalidate({
-    cacheName: "videos",
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 30,              // 🔻 Lower this too
-        purgeOnQuotaError: true,     // 🔥 Very important!
-      }),
-    ],
-  })
-);
+// // Cache all videos on the site
+// registerRoute(
+//   ({ request }) => request.destination === "video",
+//   new StaleWhileRevalidate({
+//     cacheName: "videos",
+//     plugins: [
+//       new ExpirationPlugin({
+//         maxEntries: 30,              // 🔻 Lower this too
+//         purgeOnQuotaError: true,     // 🔥 Very important!
+//       }),
+//     ],
+//   })
+// );
 
 // Allow the web app to trigger skipWaiting via registration.waiting.postMessage({ type: 'SKIP_WAITING' })
 self.addEventListener("message", (event: ExtendableMessageEvent) => {
@@ -80,29 +81,29 @@ self.addEventListener("message", (event: ExtendableMessageEvent) => {
  *
  */
 
-self.addEventListener("fetch", (event: FetchEvent) => {
-  const { request } = event;
+// self.addEventListener("fetch", (event: FetchEvent) => {
+//   const { request } = event;
 
-  // Handle GraphQL POST requests
-  if (request.method === "POST" && isGraphQLRequest(request)) {
-    event.respondWith(staleWhileRevalidate(event));
-    return;
-  }
+//   // Handle GraphQL POST requests
+//   if (request.method === "POST" && isGraphQLRequest(request)) {
+//     event.respondWith(staleWhileRevalidate(event));
+//     return;
+//   }
 
-  // Handle REST API GET requests
-  if (request.method === "GET" && isRestApiRequest(request)) {
-    event.respondWith(cacheFirstStrategy(event));
-    return;
-  }
-});
+//   // Handle REST API GET requests
+//   if (request.method === "GET" && isRestApiRequest(request)) {
+//     event.respondWith(cacheFirstStrategy(event));
+//     return;
+//   }
+// });
 
 // Helper function to check if the request is a GraphQL request
-const isGraphQLRequest = (request: Request): boolean =>
-  request.url.includes("/graphql"); // Modify based on your GraphQL API endpoint
+// const isGraphQLRequest = (request: Request): boolean =>
+//   request.url.includes("/graphql"); // Modify based on your GraphQL API endpoint
 
 // Helper function to check if the request is a REST API request
-const isRestApiRequest = (request: Request): boolean =>
-  request.url.includes("/wp-json/wc/v3/"); // Modify based on your REST API structure
+// const isRestApiRequest = (request: Request): boolean =>
+//   request.url.includes("/wp-json/wc/v3/"); // Modify based on your REST API structure
 
 // IndexedDB setup for GraphQL caching
 const store = new Store("Cache-Storage", "Responses");
@@ -111,185 +112,185 @@ const store = new Store("Cache-Storage", "Responses");
  * Cache-First Strategy for REST API (GET Requests)
  * Returns the cached response if available, otherwise fetches from network and caches it.
  */
-const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
-  const url = event.request.url;
-  const cached = await getRestApiCache(url);
-  if (cached) return cached;
+// const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
+//   const url = event.request.url;
+//   const cached = await getRestApiCache(url);
+//   if (cached) return cached;
 
-  try {
-    const networkResponse = await fetch(event.request.clone());
-    await setRestApiCache(url, networkResponse.clone());
-    return networkResponse;
-  } catch (error) {
-    console.error("cacheFirstStrategy error:", error);
-    return new Response(null, {
-      status: 503,
-      statusText: "Service Unavailable",
-    });
-  }
-};
+//   try {
+//     const networkResponse = await fetch(event.request.clone());
+//     await setRestApiCache(url, networkResponse.clone());
+//     return networkResponse;
+//   } catch (error) {
+//     console.error("cacheFirstStrategy error:", error);
+//     return new Response(null, {
+//       status: 503,
+//       statusText: "Service Unavailable",
+//     });
+//   }
+// };
 
 /**
  * Stale-While-Revalidate Strategy for GraphQL (POST Requests)
  * Returns the cached response first if available and updates it in the background.
  */
-const staleWhileRevalidate = async (event: FetchEvent): Promise<Response> => {
-  let cachedResponse: Response | null = await getCache(event.request.clone());
+// const staleWhileRevalidate = async (event: FetchEvent): Promise<Response> => {
+//   let cachedResponse: Response | null = await getCache(event.request.clone());
 
-  try {
-    if (cachedResponse) {
-      // Fetch in the background to update the cache
-      fetch(event.request.clone())
-        .then(async (fetchResponse) => {
-          const responseClone = fetchResponse.clone();
-          await setCache(event.request.clone(), responseClone);
-        })
-        .catch((error) => {
-          console.error("Fetch error:", error);
-        });
+//   try {
+//     if (cachedResponse) {
+//       // Fetch in the background to update the cache
+//       fetch(event.request.clone())
+//         .then(async (fetchResponse) => {
+//           const responseClone = fetchResponse.clone();
+//           await setCache(event.request.clone(), responseClone);
+//         })
+//         .catch((error) => {
+//           console.error("Fetch error:", error);
+//         });
 
-      return cachedResponse;
-    }
+//       return cachedResponse;
+//     }
 
-    // If no cached response is found, fetch from the network
-    const fetchResponse = await fetch(event.request.clone());
-    const responseClone = fetchResponse.clone();
-    await setCache(event.request.clone(), responseClone);
+//     // If no cached response is found, fetch from the network
+//     const fetchResponse = await fetch(event.request.clone());
+//     const responseClone = fetchResponse.clone();
+//     await setCache(event.request.clone(), responseClone);
 
-    return fetchResponse;
-  } catch (error) {
-    console.error("staleWhileRevalidate error:", error);
-    // If an error occurs during the process, return the cached response if available
-    // Otherwise, return a generic service unavailable response
-    return (
-      cachedResponse ||
-      new Response(null, { status: 503, statusText: "Service Unavailable" })
-    );
-  }
-};
+//     return fetchResponse;
+//   } catch (error) {
+//     console.error("staleWhileRevalidate error:", error);
+//     // If an error occurs during the process, return the cached response if available
+//     // Otherwise, return a generic service unavailable response
+//     return (
+//       cachedResponse ||
+//       new Response(null, { status: 503, statusText: "Service Unavailable" })
+//     );
+//   }
+// };
 
 /**
  * Retrieve GraphQL cached response from IndexedDB
  */
-const getCache = async (request: Request): Promise<Response | null> => {
-  try {
-    const body = await request.clone().json();
-    const id = CryptoJS.MD5(body.query).toString();
-    const data = await get<{
-      response: CachedResponse;
-      timestamp: number;
-    } | null>(id, store);
+// const getCache = async (request: Request): Promise<Response | null> => {
+//   try {
+//     const body = await request.clone().json();
+//     const id = CryptoJS.MD5(body.query).toString();
+//     const data = await get<{
+//       response: CachedResponse;
+//       timestamp: number;
+//     } | null>(id, store);
 
-    if (!data) return null;
+//     if (!data) return null;
 
-    const isCachedExpired = Date.now() - data.timestamp > 3600 * 1000; // Cache expiration in seconds
-    if (isCachedExpired) return null;
+//     const isCachedExpired = Date.now() - data.timestamp > 3600 * 1000; // Cache expiration in seconds
+//     if (isCachedExpired) return null;
 
-    return new Response(JSON.stringify(data.response.body), data.response);
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-};
+//     return new Response(JSON.stringify(data.response.body), data.response);
+//   } catch (err) {
+//     console.error(err);
+//     return null;
+//   }
+// };
 
 /**
  * Store GraphQL response in IndexedDB
  */
-const setCache = async (
-  request: Request,
-  response: Response
-): Promise<void> => {
-  try {
-    const body = await request.clone().json();
-    const id = CryptoJS.MD5(body.query).toString();
-    const entry = {
-      query: body.query,
-      response: await serializeResponse(response),
-      timestamp: Date.now(),
-    };
-    await set(id, entry, store);
-  } catch (err) {
-    console.error(err);
-  }
-};
+// const setCache = async (
+//   request: Request,
+//   response: Response
+// ): Promise<void> => {
+//   try {
+//     const body = await request.clone().json();
+//     const id = CryptoJS.MD5(body.query).toString();
+//     const entry = {
+//       query: body.query,
+//       response: await serializeResponse(response),
+//       timestamp: Date.now(),
+//     };
+//     await set(id, entry, store);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
 
 /**
  * Serialize response for GraphQL caching
  */
-const serializeResponse = async (
-  response: Response
-): Promise<CachedResponse> => {
-  const serializedHeaders: Record<string, string> = {};
-  for (const [key, value] of response.headers.entries()) {
-    serializedHeaders[key] = value;
-  }
+// const serializeResponse = async (
+//   response: Response
+// ): Promise<CachedResponse> => {
+//   const serializedHeaders: Record<string, string> = {};
+//   for (const [key, value] of response.headers.entries()) {
+//     serializedHeaders[key] = value;
+//   }
 
-  return {
-    headers: serializedHeaders,
-    status: response.status,
-    statusText: response.statusText,
-    body: await response.json(),
-  };
-};
+//   return {
+//     headers: serializedHeaders,
+//     status: response.status,
+//     statusText: response.statusText,
+//     body: await response.json(),
+//   };
+// };
 
 /**
  * Get REST API GET response from IndexedDB
  */
-const getRestApiCache = async (url: string): Promise<Response | null> => {
-  try {
-    const data = await get<CachedResponse & { timestamp: number }>(url, store);
-    if (!data) return null;
+// const getRestApiCache = async (url: string): Promise<Response | null> => {
+//   try {
+//     const data = await get<CachedResponse & { timestamp: number }>(url, store);
+//     if (!data) return null;
 
-    const isExpired = Date.now() - data.timestamp > 3600 * 1000; // 1 hour
-    if (isExpired) return null;
+//     const isExpired = Date.now() - data.timestamp > 3600 * 1000; // 1 hour
+//     if (isExpired) return null;
 
-    return new Response(JSON.stringify(data.body), {
-      status: data.status,
-      statusText: data.statusText,
-      headers: new Headers(data.headers),
-    });
-  } catch (err) {
-    console.error("getRestApiCache error:", err);
-    return null;
-  }
-};
+//     return new Response(JSON.stringify(data.body), {
+//       status: data.status,
+//       statusText: data.statusText,
+//       headers: new Headers(data.headers),
+//     });
+//   } catch (err) {
+//     console.error("getRestApiCache error:", err);
+//     return null;
+//   }
+// };
 
 /**
  * Save REST API GET response in IndexedDB
  */
-const setRestApiCache = async (
-  url: string,
-  response: Response
-): Promise<void> => {
-  try {
-    const headers: Record<string, string> = {};
-    response.headers.forEach((value, key) => {
-      headers[key] = value;
-    });
+// const setRestApiCache = async (
+//   url: string,
+//   response: Response
+// ): Promise<void> => {
+//   try {
+//     const headers: Record<string, string> = {};
+//     response.headers.forEach((value, key) => {
+//       headers[key] = value;
+//     });
 
-    const entry: CachedResponse & { timestamp: number } = {
-      headers,
-      status: response.status,
-      statusText: response.statusText,
-      body: await response.clone().json(),
-      timestamp: Date.now(),
-    };
+//     const entry: CachedResponse & { timestamp: number } = {
+//       headers,
+//       status: response.status,
+//       statusText: response.statusText,
+//       body: await response.clone().json(),
+//       timestamp: Date.now(),
+//     };
 
-    await set(url, entry, store);
-  } catch (err) {
-    console.error("setRestApiCache error:", err);
-  }
-};
+//     await set(url, entry, store);
+//   } catch (err) {
+//     console.error("setRestApiCache error:", err);
+//   }
+// };
 
 /**
  * Cached Response Interface
  */
-interface CachedResponse {
-  headers: Record<string, string>;
-  status: number;
-  statusText: string;
-  body: any;
-}
+// interface CachedResponse {
+//   headers: Record<string, string>;
+//   status: number;
+//   statusText: string;
+//   body: any;
+// }
 
 /*
  * End of custom service worker logic to cache the graphql POST requests.
