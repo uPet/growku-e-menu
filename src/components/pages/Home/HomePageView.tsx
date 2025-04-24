@@ -35,7 +35,7 @@ const HomePageView = () => {
         const categoriesData = await getCategoriesData();
         if (!categoriesData) return;
         setError("");
-        setCategories([categoriesData?.[0]]);
+        setCategories(categoriesData);
         setSelectedCategory(categoriesData?.[0]?.title);
       } catch (error: any) {
         setError(
