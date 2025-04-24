@@ -3,7 +3,6 @@
 
 // import CryptoJS from "crypto-js";
 // import { Store, get, set } from "idb-keyval";
-import { Store } from "idb-keyval";
 import { clientsClaim } from "workbox-core";
 // import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
@@ -106,7 +105,7 @@ self.addEventListener("message", (event: ExtendableMessageEvent) => {
 //   request.url.includes("/wp-json/wc/v3/"); // Modify based on your REST API structure
 
 // IndexedDB setup for GraphQL caching
-const store = new Store("Cache-Storage", "Responses");
+// const store = new Store("Cache-Storage", "Responses");
 
 /**
  * Cache-First Strategy for REST API (GET Requests)
