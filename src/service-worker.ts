@@ -36,7 +36,7 @@ registerRoute(
     cacheName: "all-images",
     plugins: [
       new ExpirationPlugin({
-        maxEntries: 500,             // Cache up to 500 images, assume we have max 100 products and each one has 5 images.
+        maxEntries: 500, // Cache up to 500 images, assume we have max 100 products and each one has 5 images.
         purgeOnQuotaError: true,
       }),
     ],
@@ -86,9 +86,13 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 
   // Handle REST API GET requests
   if (request.method === "GET" && isRestApiRequest(request)) {
-    event.respondWith(cacheFirstStrategy(event));
+    event.respondWith(staleWhileRevalidateStrategy(event));
     return;
   }
+  // if (request.method === "GET" && isRestApiRequest(request)) {
+  //   event.respondWith(cacheFirstStrategy(event));
+  //   return;
+  // }
 });
 
 // Helper function to check if the request is a GraphQL request
@@ -106,21 +110,57 @@ const store = new Store("Cache-Storage", "Responses");
  * Cache-First Strategy for REST API (GET Requests)
  * Returns the cached response if available, otherwise fetches from network and caches it.
  */
-const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
+// const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
+//   const url = event.request.url;
+//   const cached = await getRestApiCache(url);
+//   if (cached) return cached;
+
+//   try {
+//     const networkResponse = await fetch(event.request.clone());
+//     await setRestApiCache(url, networkResponse.clone());
+//     return networkResponse;
+//   } catch (error) {
+//     console.error("cacheFirstStrategy error:", error);
+//     return new Response(null, {
+//       status: 503,
+//       statusText: "Service Unavailable",
+//     });
+//   }
+// };
+
+/**
+ *
+ *  Stale-While-Revalidate strategy for REST API GET requests:
+ *  Serves cached data immediately, then fetches and updates cache in the background.
+ *  So it gets updated the next time the user opens the app.
+ */
+const staleWhileRevalidateStrategy = async (
+  event: FetchEvent
+): Promise<Response> => {
   const url = event.request.url;
   const cached = await getRestApiCache(url);
-  if (cached) return cached;
+
+  const fetchAndUpdate = async () => {
+    try {
+      const response = await fetch(event.request.clone());
+      await setRestApiCache(url, response.clone());
+    } catch (e) {
+      console.error("staleWhileRevalidate fetch error", e);
+    }
+  };
+
+  if (cached) {
+    fetchAndUpdate(); // Update in background
+    return cached;
+  }
 
   try {
-    const networkResponse = await fetch(event.request.clone());
-    await setRestApiCache(url, networkResponse.clone());
-    return networkResponse;
-  } catch (error) {
-    console.error("cacheFirstStrategy error:", error);
-    return new Response(null, {
-      status: 503,
-      statusText: "Service Unavailable",
-    });
+    const response = await fetch(event.request.clone());
+    await setRestApiCache(url, response.clone());
+    return response;
+  } catch (e) {
+    console.error("Network fetch failed", e);
+    return new Response(null, { status: 503 });
   }
 };
 
