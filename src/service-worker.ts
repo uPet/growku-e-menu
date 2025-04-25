@@ -89,10 +89,6 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     event.respondWith(staleWhileRevalidateStrategy(event));
     return;
   }
-  // if (request.method === "GET" && isRestApiRequest(request)) {
-  //   event.respondWith(cacheFirstStrategy(event));
-  //   return;
-  // }
 });
 
 // Helper function to check if the request is a GraphQL request
@@ -105,28 +101,6 @@ const isRestApiRequest = (request: Request): boolean =>
 
 // IndexedDB setup for GraphQL caching
 const store = new Store("Cache-Storage", "Responses");
-
-/**
- * Cache-First Strategy for REST API (GET Requests)
- * Returns the cached response if available, otherwise fetches from network and caches it.
- */
-// const cacheFirstStrategy = async (event: FetchEvent): Promise<Response> => {
-//   const url = event.request.url;
-//   const cached = await getRestApiCache(url);
-//   if (cached) return cached;
-
-//   try {
-//     const networkResponse = await fetch(event.request.clone());
-//     await setRestApiCache(url, networkResponse.clone());
-//     return networkResponse;
-//   } catch (error) {
-//     console.error("cacheFirstStrategy error:", error);
-//     return new Response(null, {
-//       status: 503,
-//       statusText: "Service Unavailable",
-//     });
-//   }
-// };
 
 /**
  *
