@@ -98,6 +98,22 @@
   margin-bottom: 8px;
 }
 
+.modal .modal-body .title .dot {
+  margin-left: 12px;
+}
+
+.modal .modal-body .title .price-wrapper {
+  margin-left: 12px;
+}
+
+.modal .price-value {
+  font-size: 20px;
+}
+
+.modal .price .price-value {
+  line-height: 37px;
+}
+
 .modal .modal-body .description {
   margin: 0;
 }

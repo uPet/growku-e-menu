@@ -1,0 +1,25 @@
+.price-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.price-wrapper .divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--growku-text-heading);
+}
+
+.price {
+  display: flex;
+  align-items: center;
+}
+
+.price .price-cents {
+  font-size: 12px;
+  margin-bottom: -5px;
+}
+
+.price svg {
+  margin-right: 7px;
+}

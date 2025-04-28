@@ -8,6 +8,9 @@ import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
+import { Category } from "./model/category";
+import { Product } from "./model/product";
+import { mapAPICategoryToModel } from "./api/categories-graphql";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -117,14 +120,47 @@ const staleWhileRevalidateStrategy = async (
   const fetchAndUpdate = async () => {
     try {
       const response = await fetch(event.request.clone());
-      await setRestApiCache(url, response.clone());
+      const responseClone = response.clone();
+      const responseTestClone = response.clone();
+      const cachedResponse = await getRestApiCache(url);
+      const checkCachedResponse = await cachedResponse?.json();
+      const responseData = await responseTestClone.json();
+      let updated = false;
+
+      if (Array.isArray(checkCachedResponse) && Array.isArray(responseData)) {
+        const isDataUpdated = isProductsDataUpdated(
+          checkCachedResponse.map(mapAPICategoryToModel),
+          responseData.map(mapAPICategoryToModel)
+        );
+
+        updated = isDataUpdated;
+      } else {
+        const isConfigDataUpdated = isConfigUpdated(
+          checkCachedResponse,
+          responseData
+        );
+        updated = isConfigDataUpdated;
+      }
+
+      if (updated) {
+        await setRestApiCache(url, responseClone);
+
+        // Tell the client to reload the page
+        const allClients = await self.clients.matchAll({ type: "window" });
+        for (const client of allClients) {
+          client.postMessage({ type: "RELOAD_APP" });
+        }
+        return;
+      } else {
+        await setRestApiCache(url, responseClone);
+      }
     } catch (e) {
       console.error("staleWhileRevalidate fetch error", e);
     }
   };
 
   if (cached) {
-    fetchAndUpdate(); // Update in background
+    fetchAndUpdate(); // update in background
     return cached;
   }
 
@@ -137,7 +173,6 @@ const staleWhileRevalidateStrategy = async (
     return new Response(null, { status: 503 });
   }
 };
-
 /**
  * Stale-While-Revalidate Strategy for GraphQL (POST Requests)
  * Returns the cached response first if available and updates it in the background.
@@ -300,3 +335,76 @@ interface CachedResponse {
 /*
  * End of custom service worker logic to cache the graphql POST requests.
  */
+
+/**
+ * Compare cached and API categories and products by updated_date
+ * @param cachedCategories Array of cached categories
+ * @param apiCategories Array of fresh API categories
+ * @returns true if any update is detected, otherwise false
+ */
+export function isProductsDataUpdated(
+  cachedCategories: Category[],
+  apiCategories: Category[]
+): boolean {
+  const cachedCategoryMap = new Map<string, Category>(
+    cachedCategories.map((cat) => [cat.id, cat])
+  );
+
+  for (const apiCategory of apiCategories) {
+    const cachedCategory = cachedCategoryMap.get(apiCategory.id);
+    if (!cachedCategory) {
+      // New category added
+      return true;
+    }
+
+    if (cachedCategory.updatedAt !== apiCategory.updatedAt) {
+      return true;
+    }
+
+    const cachedProductMap = new Map<string, Product>(
+      (cachedCategory.products ?? []).map((prod) => [prod.id, prod])
+    );
+
+    for (const apiProduct of apiCategory.products) {
+      const cachedProduct = cachedProductMap.get(apiProduct.id);
+      if (!cachedProduct) {
+        // New product added
+        return true;
+      }
+
+      if (cachedProduct.updatedAt !== apiProduct.updatedAt) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Compare cached and API config objects to detect any changes
+ * @param cachedConfig The cached configuration object
+ * @param apiConfig The fresh configuration object from the API
+ * @returns true if any update is detected, otherwise false
+ */
+export function isConfigUpdated(
+  cachedConfig: Record<string, any>,
+  apiConfig: Record<string, any>
+): boolean {
+  const cachedKeys = Object.keys(cachedConfig);
+  const apiKeys = Object.keys(apiConfig);
+
+  // Check if number of keys changed
+  if (cachedKeys.length !== apiKeys.length) {
+    return true;
+  }
+
+  // Check if any value is different
+  for (const key of apiKeys) {
+    if (cachedConfig[key] !== apiConfig[key]) {
+      return true;
+    }
+  }
+
+  return false;
+}
