@@ -16,8 +16,6 @@ export type ProductCardType = Product & {
   category: string;
 };
 
-
-
 const HomePageView = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -45,6 +43,18 @@ const HomePageView = () => {
     }
 
     fetchCategoriesWithProducts();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchCategoriesWithProducts();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   // Set all available products once we get the data

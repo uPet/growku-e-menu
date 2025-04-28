@@ -24,9 +24,16 @@ export const getCategoriesData = async (
     throw new Error("Failed to fetch categories and products");
   }
 
-  return data.map((category: any) => ({
+  return data.map((category: any) => {
+    return mapAPICategoryToModel(category);
+  });
+};
+
+export const mapAPICategoryToModel = (category: any): Category => {
+  return {
     id: category.id,
     title: category.name,
+    updatedAt: category.updated_date,
     products: category.products.map((product: any) => ({
       id: product.id,
       title: product.name,
@@ -34,6 +41,7 @@ export const getCategoriesData = async (
       price: product.price,
       cashPrice: product.cash_price,
       permalink: product.permalink,
+      updatedAt: product.updated_date,
       featuredImage: {
         url: product.featured_image || product.media[0]?.url,
         alt: product.name,
@@ -53,5 +61,5 @@ export const getCategoriesData = async (
         },
       ],
     })),
-  }));
+  };
 };

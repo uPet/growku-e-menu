@@ -55,12 +55,9 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const cookieConfigData = Cookies.get("configData");
         const client = new ConfigurationsClient();
         const serverConfigData = await client.getConfigurationsData();
-        if (!cookieConfigData) {
-          setConfigData(serverConfigData);
-        }
+        setConfigData(serverConfigData);
         setError("");
         Cookies.set("configData", JSON.stringify(serverConfigData));
       } catch (error: any) {
@@ -71,6 +68,18 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     };
 
     fetchData();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchData();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   return (

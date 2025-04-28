@@ -18,4 +18,5 @@ export type Product = {
   compareAtPrice: string;
   featuredImage: Media;
   media: Media[];
+  updatedAt: string;
 };

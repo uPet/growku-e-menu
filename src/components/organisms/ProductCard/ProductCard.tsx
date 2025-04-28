@@ -9,6 +9,7 @@ import CardContent from "../../atoms/CardContent/CardContent";
 import ProductModal from "../ProductModal/ProductModal";
 import { ProductCardType } from "../../pages/Home/HomePageView";
 import { useConfig } from "../ConfigContext";
+import ProductPrice from "../ProductPrice/ProductPrice";
 
 type ProductCardProps = {
   shouldBeHidden: boolean;
@@ -122,14 +123,10 @@ function ProductCard({
           <CardContent variant={variant}>
             <h2>{product.title}</h2>
             {variant === "default" && <h3>{product.description}</h3>}
-            <p>
-              {product.compareAtPrice && (
-                <span className="h2 compare-text">
-                  {product.compareAtPrice}
-                </span>
-              )}
-              <span className="h2">${product.cashPrice || product.price}</span>
-            </p>
+            <ProductPrice
+              cashPrice={product.cashPrice}
+              cardPrice={product.price}
+            />
           </CardContent>
         </CardActionArea>
       </Card>
