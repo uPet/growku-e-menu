@@ -19,8 +19,13 @@
 }
 
 .menu-item-wrapper {
+  display: flex;
   position: relative;
   height: 50px;
+}
+
+.category-heading {
+  width: 100%;
 }
 
 .menu-item {

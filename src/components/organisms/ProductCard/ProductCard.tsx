@@ -121,7 +121,7 @@ function ProductCard({
             alt={product.title}
           />
           <CardContent variant={variant}>
-            <h2>{product.title}</h2>
+            <h3>{product.title}</h3>
             {variant === "default" && <h3>{product.description}</h3>}
             <ProductPrice
               cashPrice={product.cashPrice}

@@ -5,6 +5,7 @@ function CardIcon() {
     <svg
       style={{
         scale: "1.5",
+        marginBottom: "1px",
       }} // TODO: This is just to fix the svg, remove it when the svg is fixed
       id="card_icon"
       xmlns="http://www.w3.org/2000/svg"
