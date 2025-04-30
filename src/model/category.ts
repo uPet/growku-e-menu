@@ -5,4 +5,8 @@ export type Category = {
   title: string;
   products: Product[];
   updatedAt: string;
+  banner: {
+    url: string;
+    columnsNumber: number;
+  };
 };

@@ -24,27 +24,42 @@ const Menu: React.FC<MenuProps> = ({
 }) => {
   return (
     <div className="menu">
-      <div className="menu-list">
+      <div aria-label="Category navigation" className="menu-list">
         {menuHeader && <div className="menu-header">{menuHeader}</div>}
-        {items.map((item) => (
-          <div key={item} className="menu-item-wrapper"
-          id={`menu-item-wrapper-${item?.toLocaleLowerCase()}`}
-          >
-            <button
+        {items.map((item) => {
+          const isSelected = selectedItem === item;
+          const itemId = `menu-item-${item?.toLowerCase()}`;
+          return (
+            <div
               key={item}
-              className={`text-body menu-item ${selectedItem === item ? "active" : ""}`}
-              onClick={(e) => {
-                e.preventDefault();
-                onClick?.(item);
-              }}
+              className="menu-item-wrapper"
+              id={`menu-item-wrapper-${item.toLowerCase()}`}
             >
-              {item}
-            </button>
-            {selectedItem === item && (
-              <div className="menu-item-highlight"></div>
-            )}
-          </div>
-        ))}
+              <h2 className="category-heading">
+                <button
+                  id={itemId}
+                  className={`text-body menu-item ${
+                    isSelected ? "active" : ""
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onClick?.(item);
+                  }}
+                  aria-current={isSelected ? "true" : undefined}
+                  aria-label={`View ${item} category`}
+                  role="tab"
+                  aria-selected={isSelected}
+                  tabIndex={0}
+                >
+                  {item}
+                </button>
+              </h2>
+              {isSelected && (
+                <div className="menu-item-highlight" aria-hidden="true"></div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div
         id={`menu-content-${selectedItem?.toLocaleLowerCase()}`}

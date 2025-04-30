@@ -30,7 +30,7 @@ const HomePageView = () => {
   useEffect(() => {
     async function fetchCategoriesWithProducts() {
       try {
-        const categoriesData = await getCategoriesData();
+        const categoriesData = await getCategoriesData(); 
         if (!categoriesData) return;
         setError("");
         setCategories(categoriesData);
@@ -46,6 +46,7 @@ const HomePageView = () => {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
+        setSelectedCategory(categories?.[0]?.title);
         fetchCategoriesWithProducts();
       }
     };
@@ -55,6 +56,7 @@ const HomePageView = () => {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Set all available products once we get the data
@@ -121,7 +123,7 @@ const HomePageView = () => {
             />
           }
         >
-          <Products items={allProducts} selectedCategory={selectedCategory} />
+          <Products items={allProducts} categories={categories} selectedCategory={selectedCategory} />
         </Menu>
       </div>
       <Toaster

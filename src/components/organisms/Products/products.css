@@ -4,3 +4,17 @@
   flex-wrap: wrap;
   gap: 25px;
 }
+
+.category-banner {
+  width: 100%;
+  height: calc(var(--featured-card-height) * var(--category-banner-columns-number));
+}
+
+.category-banner-image,
+.category-banner-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 8px;
+  object-fit: cover;
+}

@@ -34,6 +34,10 @@ export const mapAPICategoryToModel = (category: any): Category => {
     id: category.id,
     title: category.name,
     updatedAt: category.updated_date,
+    banner: {
+      url: category.banner?.url,
+      columnsNumber: Number(category.banner?.columns_number || 0),
+    },
     products: category.products.map((product: any) => ({
       id: product.id,
       title: product.name,
