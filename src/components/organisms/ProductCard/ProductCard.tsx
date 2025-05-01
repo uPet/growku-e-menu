@@ -122,7 +122,9 @@ function ProductCard({
           />
           <CardContent variant={variant}>
             <h3>{product.title}</h3>
-            {variant === "default" && <h3>{product.description}</h3>}
+            {variant === "default" && (
+              <p className="text-subtitle">{product.description}</p>
+            )}
             <ProductPrice
               cashPrice={product.cashPrice}
               cardPrice={product.price}
