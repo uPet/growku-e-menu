@@ -25,6 +25,7 @@ const defaultConfigData: ConfigItem = {
   colors_background_critical: "",
   colors_modal_background: "",
   colors_modal_overlay: "",
+  colors_modal_border_color: ""
 };
 
 const ConfigContext = createContext<ConfigContextType>({

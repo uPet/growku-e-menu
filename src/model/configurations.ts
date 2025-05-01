@@ -14,6 +14,7 @@ export type Option =
   | "colors_background_default"
   | "colors_background_critical"
   | "colors_modal_background"
-  | "colors_modal_overlay";
+  | "colors_modal_overlay"
+  | "colors_modal_border_color";
 
 export type ConfigItem = Record<Option, string>;

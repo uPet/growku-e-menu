@@ -39,7 +39,7 @@
   padding-top: 21px;
   background-color: var(--growku-modal-background-color);
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--growku-modal-border-color);
   max-width: 582px;
   max-height: calc(100vh - 16px * 2);
   width: calc(100vw - 16px * 2);

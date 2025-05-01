@@ -51,6 +51,10 @@ export default function ThemeVariables() {
       "--growku-modal-overlay",
       configData["colors_modal_overlay"]
     );
+    root.style.setProperty(
+      "--growku-modal-border-color",
+      configData["colors_modal_border_color"]
+    );
   }, [configData]);
 
   return null;
