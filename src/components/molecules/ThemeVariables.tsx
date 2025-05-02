@@ -55,6 +55,16 @@ export default function ThemeVariables() {
       "--growku-modal-border-color",
       configData["colors_modal_border_color"]
     );
+
+    root.style.setProperty(
+      "--growku-product-card-placeholder-image-url",
+      `url(${configData["product_card_placeholder_image_url"]})`
+    );
+
+    root.style.setProperty(
+      "--growku-product-featured-card-placeholder-image-url",
+      `url(${configData["product_featured_card_placeholder_image_url"]})`
+    );
   }, [configData]);
 
   return null;

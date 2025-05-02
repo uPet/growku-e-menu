@@ -15,6 +15,8 @@ export type Option =
   | "colors_background_critical"
   | "colors_modal_background"
   | "colors_modal_overlay"
-  | "colors_modal_border_color";
+  | "colors_modal_border_color"
+  | "product_card_placeholder_image_url"
+  | "product_featured_card_placeholder_image_url";
 
 export type ConfigItem = Record<Option, string>;

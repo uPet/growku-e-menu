@@ -26,10 +26,23 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.7) 81%
+    ),
+    var(--growku-product-card-placeholder-image-url);
+
+  border-radius: 5px;
+  background-size: contain;
+}
+
+.card-media--featured .placeholder {
+  background: linear-gradient(
       180.5deg,
       rgba(0, 0, 0, 0) 4.14%,
-      rgba(0, 0, 0, 0.6) 84.51%
+      rgba(0, 0, 0, 0.8) 84.51%
     ),
-    var(--growku-brand-color);
-  border-radius: 5px;
+    var(--growku-product-featured-card-placeholder-image-url);
+
+  background-size: contain;
 }
