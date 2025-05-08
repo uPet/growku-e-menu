@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./menu.css";
+import { decodeHtmlEntities } from "../../../helpers/decode-html-entities";
 
 interface MenuProps {
   menuContentProps?: React.HTMLProps<HTMLDivElement>;
@@ -46,12 +47,12 @@ const Menu: React.FC<MenuProps> = ({
                     onClick?.(item);
                   }}
                   aria-current={isSelected ? "true" : undefined}
-                  aria-label={`View ${item} category`}
+                  aria-label={`View ${decodeHtmlEntities(item)} category`}
                   role="tab"
                   aria-selected={isSelected}
                   tabIndex={0}
                 >
-                  {item}
+                  {decodeHtmlEntities(item)}
                 </button>
               </h2>
               {isSelected && (
