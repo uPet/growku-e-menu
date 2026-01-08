@@ -30,6 +30,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:layout1": "REACT_APP_LAYOUT_ID=layout1 react-scripts build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
