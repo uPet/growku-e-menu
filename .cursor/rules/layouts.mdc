@@ -1,0 +1,94 @@
+---
+description: Layout strategy and rules for multi-restaurant builds. Always pick a single target layout (layout1, layout2, etc.) before making layout-specific changes.
+globs:
+  - "**/*.tsx"
+  - "package.json"
+alwaysApply: true
+---
+
+# Multi-layout / multi-restaurant strategy (Cursor rules)
+
+- This project supports **multiple visual/layout variants** of the e-menu (e.g. different restaurants), built as **separate builds** of the same codebase.
+- Each build targets a **single layout ID** (e.g. `layout1`, `layout2`, `layout3`), provided via the `REACT_APP_LAYOUT_ID` environment variable.
+- **Offline/PWA behavior and business logic must remain shared and unchanged** across layouts. Only presentation/layout code should differ.
+
+## Layout IDs and default layout
+
+- We use string layout IDs: `layout1`, `layout2`, `layout3`, etc.
+- **`layout1` is the current default layout** and corresponds to the existing production experience.
+- When adding new layouts, prefer simple incremental IDs: `layout2`, `layout3`, ...
+
+## Folder structure and separation of concerns
+
+- All **layout-specific React components** must live under `src/layouts/<layoutId>/`.
+  - Examples:
+    - `src/layouts/layout1/*` – default / current layout.
+    - `src/layouts/layout2/*` – second layout.
+    - `src/layouts/layout3/*` – third layout, etc.
+- All **shared components** that are reused across layouts live outside of `src/layouts/`, typically under:
+  - `src/components/**`
+  - `src/hooks/**`
+  - `src/model/**`
+  - `src/api/**`
+  - `src/helpers/**`
+- **Rule:** Do not introduce layout-specific conditionals (e.g. `if (layoutId === 'layout2')`) inside shared components. Instead:
+  - Put layout differences into `src/layouts/<layoutId>/...`.
+  - If a shared component truly needs a variation, expose **generic props** (e.g. `variant`, `size`, `showVideoCount`) and set those from layout code.
+
+## Working on layouts in Cursor
+
+- Before making changes, **decide which layout you are working on**:
+  - If modifying the current default UX, you are working on **`layout1`**.
+  - If implementing a new restaurant-specific UX, choose or create an appropriate layout ID (e.g. `layout2`).
+- When implementing features:
+  - For **layout-specific behavior/structure**, modify only files under `src/layouts/<layoutId>/`.
+  - For **shared behavior/logic**, modify shared files under `src/components`, `src/hooks`, `src/api`, etc., but keep them **layout-agnostic**.
+- Avoid mixing multiple layouts in a single change set:
+  - Prefer: “Implement new hero section for `layout2` only.”
+  - Avoid: “Change hero for `layout1` and `layout2` in the same edit unless explicitly requested.”
+
+## Creating a new layout
+
+When the user asks to create a new layout (e.g. `layout3`), follow this strategy:
+
+1. **Identify the source layout to copy**:
+   - For most cases, copy **`layout1`** (current default).
+2. **Create a new folder** under `src/layouts/`:
+   - `src/layouts/layout3/`
+3. **Copy the baseline layout files**:
+   - Copy the contents of `src/layouts/layout1/` into `src/layouts/layout3/`.
+   - Update component names/types *inside that folder only* as needed (e.g. `Layout1Home` → `Layout3Home`).
+4. **Wire the new layout into the selection mechanism** (if present):
+   - Add `layout3` to any `LayoutId` unions or maps.
+   - Ensure selection is based on `REACT_APP_LAYOUT_ID === 'layout3'`.
+5. **Do not change `layout1` while implementing a new layout** unless the user explicitly asks for a shared refactor.
+
+## Environment & build configuration
+
+- **Environment variable**:
+  - `REACT_APP_LAYOUT_ID` controls which layout is active at build time.
+  - If not set, assume `layout1` as the default.
+- **Build scripts pattern** (for reference when editing `package.json`):
+  - Default build: `npm run build` (uses current shell `REACT_APP_LAYOUT_ID` or defaults to `layout1` in code).
+  - Layout-specific builds (examples):
+    - `npm run build:layout1` → `REACT_APP_LAYOUT_ID=layout1 react-scripts build`
+    - `npm run build:layout2` → `REACT_APP_LAYOUT_ID=layout2 react-scripts build`
+- When the user asks for a build for a specific restaurant/layout, prefer to use or create a script named `build:<layoutId>`.
+
+## Service worker / PWA constraints
+
+- **Never** remove or significantly alter:
+  - `src/service-worker.ts`
+  - `src/serviceWorkerRegistration.ts`
+  - Workbox configuration or offline caching logic
+- Layout changes must:
+  - Reuse the same data sources and offline caches.
+  - Not introduce new network dependencies that bypass existing offline strategies, unless explicitly requested and carefully documented.
+
+## When in doubt
+
+- If a user request is ambiguous (e.g. “change the home page layout”), ask or infer **which layout ID** is targeted:
+  - If they do not specify and we are improving the existing experience, treat it as **`layout1`**.
+- Keep **layout-specific** code inside `src/layouts/<layoutId>/` and **shared** code outside that tree.
+- Aim for **clear separation** so that changing `layout2` never accidentally changes the behavior of `layout1`.
+
